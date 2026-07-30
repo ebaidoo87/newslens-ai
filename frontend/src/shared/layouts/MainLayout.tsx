@@ -1,40 +1,30 @@
 import type { ReactNode } from "react";
 
-import Header from "../components/Header/Header";
 import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
 import Logo from "../components/Logo/Logo";
 
-type MainLayoutProps = {
+type Props = {
   children: ReactNode;
 };
 
-export default function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout({ children }: Props) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "240px 1fr",
-        minHeight: "100vh",
-      }}
-    >
-      <div>
-        <div
-          style={{
-            padding: "24px",
-            borderBottom: "1px solid #374151",
-            background: "#1f2937",
-          }}
-        >
+    <div className="grid min-h-screen grid-cols-[260px_1fr] bg-gray-950 text-white">
+      <aside className="border-r border-gray-800 bg-gray-900">
+        <div className="border-b border-gray-800 p-6">
           <Logo />
         </div>
 
         <Sidebar />
-      </div>
+      </aside>
 
-      <div>
+      <div className="flex flex-col">
         <Header />
 
-        <main style={{ padding: "24px" }}>{children}</main>
+        <main className="flex-1 overflow-auto p-8">
+          {children}
+        </main>
       </div>
     </div>
   );

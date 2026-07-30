@@ -1,13 +1,19 @@
+import StatsGrid from "./components";
+
 export default function DashboardPage() {
   return (
-    <div className="p-10">
-      <h1 className="text-4xl font-bold text-blue-500">
-        🚀 Welcome to NewsLens AI
-      </h1>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold">
+          Welcome back 👋
+        </h1>
 
-      <p className="mt-4 text-gray-300">
-        Your AI-powered news intelligence platform.
-      </p>
+        <p className="mt-2 text-gray-400">
+          Here's what's happening across your news platform today.
+        </p>
+      </div>
+
+      <StatsGrid />
     </div>
   );
 }
