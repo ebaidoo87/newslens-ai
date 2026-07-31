@@ -2,6 +2,7 @@ import { useArticles } from "../hooks/useArticles";
 
 import ArticleList from "../components/ArticleList";
 
+import ArticleSkeletonList from "../components/ArticleSkeletonList";
 
 export default function NewsPage() {
 
@@ -14,13 +15,27 @@ export default function NewsPage() {
 
   if (isLoading) {
 
-    return (
-      <h2>
-        Loading articles...
-      </h2>
-    );
+  return (
 
-  }
+    <div className="space-y-8">
+
+      <h1
+        className="
+          text-4xl
+          font-bold
+        "
+      >
+        Latest News
+      </h1>
+
+
+      <ArticleSkeletonList />
+
+    </div>
+
+  );
+
+}
 
 
   if (isError) {
