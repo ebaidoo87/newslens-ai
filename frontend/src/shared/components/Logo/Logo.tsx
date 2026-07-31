@@ -1,3 +1,5 @@
+import { env } from "../../config/env";
+
 export default function Logo() {
   return (
     <div className="flex items-center gap-3">
@@ -7,11 +9,11 @@ export default function Logo() {
 
       <div>
         <h1 className="text-lg font-bold text-white">
-          NewsLens AI
+          {env.appName}
         </h1>
 
         <p className="text-xs text-gray-400">
-          News Intelligence
+          v{env.appVersion}
         </p>
       </div>
     </div>

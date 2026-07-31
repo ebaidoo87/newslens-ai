@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 
 export default function HeaderSearch() {
   return (
-    <div className="relative w-full max-w-md">
+    <div className="relative hidden w-full max-w-md md:block">
       <Search
         size={18}
         className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
