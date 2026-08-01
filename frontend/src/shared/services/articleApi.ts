@@ -2,13 +2,21 @@ import { api } from "./api";
 
 import type { Article } from "../../features/news/types/article";
 
-export async function getArticles(): Promise<Article[]> {
+export async function getArticles(
+  search?: string
+): Promise<Article[]> {
 
-  await new Promise(
-    resolve => setTimeout(resolve, 2000)
-  );
+  console.log("Searching API for:", search);
 
-  const response = await api.get<Article[]>("/articles");
+  const response =
+    await api.get<Article[]>("/articles", {
+
+      params: {
+        search,
+      },
+
+    });
+
 
   return response.data;
 }
