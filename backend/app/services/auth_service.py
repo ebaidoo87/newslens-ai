@@ -7,14 +7,10 @@ from app.core.security import (
 )
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
-from app.schemas.user import (
-    UserLogin,
-    UserRegister,
-)
+from app.schemas.user import UserLogin, UserRegister
 
 
 class AuthService:
-
     def __init__(self, db: Session):
         self.db = db
         self.repository = UserRepository()
@@ -22,7 +18,7 @@ class AuthService:
     def register(
         self,
         user_data: UserRegister,
-    ):
+    ) -> User:
         existing_email = self.repository.get_by_email(
             self.db,
             user_data.email,
@@ -42,7 +38,7 @@ class AuthService:
         user = User(
             email=user_data.email,
             username=user_data.username,
-            password_hash=hash_password(
+            hashed_password=hash_password(
                 user_data.password
             ),
         )
@@ -55,7 +51,7 @@ class AuthService:
     def login(
         self,
         credentials: UserLogin,
-    ):
+    ) -> dict[str, str]:
         user = self.repository.get_by_email(
             self.db,
             credentials.email,
@@ -66,25 +62,26 @@ class AuthService:
 
         if not verify_password(
             credentials.password,
-            user.password_hash,
+            user.hashed_password,
         ):
             raise ValueError("Invalid email or password")
 
-        token = create_access_token(
+        access_token = create_access_token(
             {
                 "sub": user.email,
+                "user_id": user.id,
             }
         )
 
         return {
-            "access_token": token,
+            "access_token": access_token,
             "token_type": "bearer",
         }
 
     def get_current_user(
         self,
         email: str,
-    ):
+    ) -> User | None:
         return self.repository.get_by_email(
             self.db,
             email,

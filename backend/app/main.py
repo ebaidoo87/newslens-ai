@@ -20,6 +20,8 @@ from app.core.config import settings
 
 from app.services.scheduler import start_scheduler
 
+from app.api.auth import router as auth_router
+
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
 
@@ -59,6 +61,10 @@ app.include_router(
     prefix=settings.api_prefix,
 )
 
+app.include_router(
+    auth_router,
+    prefix=settings.api_prefix,
+)
 
 logger.info("Starting NewsLens AI")
 
