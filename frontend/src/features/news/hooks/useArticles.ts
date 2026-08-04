@@ -3,19 +3,20 @@ import { useQuery } from "@tanstack/react-query";
 import { getArticles } from "../../../shared/services/articleApi";
 
 export function useArticles(
-  search?: string
+  search?: string,
+  category?: string,
 ) {
-
   return useQuery({
-
-    queryKey:[
+    queryKey: [
       "articles",
-      search
+      search,
+      category,
     ],
 
     queryFn: () =>
-      getArticles(search),
-
+      getArticles(
+        search,
+        category,
+      ),
   });
-
 }

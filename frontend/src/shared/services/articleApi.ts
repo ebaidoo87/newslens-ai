@@ -3,20 +3,28 @@ import { api } from "./api";
 import type { Article } from "../../features/news/types/article";
 
 export async function getArticles(
-  search?: string
+  search?: string,
+  category?: string,
 ): Promise<Article[]> {
 
-  console.log("Searching API for:", search);
+  const response = await api.get<Article[]>("/articles", {
+    params: {
+      search,
+      category,
+    },
+  });
 
-  const response =
-    await api.get<Article[]>("/articles", {
+  return response.data;
+}
 
-      params: {
-        search,
-      },
 
-    });
+export async function getArticleById(
+  id: number,
+): Promise<Article> {
 
+  const response = await api.get<Article>(
+    `/articles/${id}`,
+  );
 
   return response.data;
 }
