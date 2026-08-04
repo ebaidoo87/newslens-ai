@@ -8,8 +8,9 @@ from app.services.news_provider import NewsProvider
 class ImportService:
 
     def __init__(self, db: Session):
+        self.db = db
         self.provider = NewsProvider()
-        self.repository = ArticleRepository(db)
+        self.repository = ArticleRepository()
 
     async def import_articles(self):
         response = await self.provider.get_top_headlines()
@@ -23,9 +24,8 @@ class ImportService:
             if not url:
                 continue
 
-            existing = self.repository.get_by_url(
-                url,
-            )
+            existing = self.repository.get_by_url(self.db,url,)
+            
 
             if existing:
                 continue
@@ -35,6 +35,9 @@ class ImportService:
                 summary=item.get("description"),
                 content=item.get("content"),
                 url=url,
+                
+                image_url=(item.get("urlToImage")or item.get("image")),
+
                 source=item.get("source", {}).get("name"),
                 author=item.get("author"),
                 language="en",
@@ -42,9 +45,7 @@ class ImportService:
                 category="technology",
             )
 
-            self.repository.create(
-                article,
-            )
+            self.repository.create(self.db,article,)
 
             imported += 1
 

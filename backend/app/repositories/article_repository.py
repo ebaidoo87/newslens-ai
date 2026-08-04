@@ -44,3 +44,25 @@ class ArticleRepository:
             .filter(Article.id == article_id)
             .first()
         )
+
+    def get_by_url(
+        self,
+        db: Session,
+        url: str,
+    ):
+        return (
+            db.query(Article)
+            .filter(Article.url == url)
+            .first()
+        )
+
+    def create(
+        self,
+        db: Session,
+        article: Article,
+    ):
+        db.add(article)
+        db.commit()
+        db.refresh(article)
+
+        return article

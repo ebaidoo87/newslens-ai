@@ -18,6 +18,10 @@ class Article(Base):
     content: Mapped[str | None] = mapped_column(Text)
 
     url: Mapped[str] = mapped_column(String(1000), unique=True)
+    
+
+    image_url: Mapped[str | None] = mapped_column(String(1000),nullable=True,
+)
 
     source: Mapped[str] = mapped_column(String(100))
 
