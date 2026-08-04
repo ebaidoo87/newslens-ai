@@ -36,9 +36,11 @@ def start_scheduler():
     if not scheduler.running:
         scheduler.add_job(
             import_job,
-            IntervalTrigger(minutes=1),
-            id="heartbeat",
+            IntervalTrigger(hours=1),
+            id="news-import",
             replace_existing=True,
+            max_instances=1,
+            coalesce=True,
         )
 
         scheduler.start()

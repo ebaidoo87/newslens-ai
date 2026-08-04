@@ -1,4 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+)
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
@@ -15,7 +20,13 @@ router = APIRouter(
 async def import_news(
     db: Session = Depends(get_db),
 ):
-
     service = ImportService(db)
 
-    return await service.import_articles()
+    try:
+        return await service.import_articles()
+
+    except RuntimeError as error:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=str(error),
+        ) from error
