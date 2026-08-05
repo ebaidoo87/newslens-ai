@@ -44,19 +44,11 @@ export async function registerUser(
   return response.data;
 }
 
-export async function getCurrentUser(
-  token: string,
-): Promise<AuthUser> {
-  const response = await api.get<AuthUser>(
-    "/auth/me",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+export async function getCurrentUser():
+Promise<AuthUser> {
+  const response =
+    await api.get<AuthUser>("/auth/me");
 
   return response.data;
 }
-
 

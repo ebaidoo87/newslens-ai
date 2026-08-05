@@ -49,7 +49,7 @@ export function AuthProvider({
       }
 
       try {
-        const currentUser = await getCurrentUser(token);
+        const currentUser = await getCurrentUser();
 
         setUser(currentUser);
       } catch {
@@ -76,9 +76,7 @@ export function AuthProvider({
 
     setToken(result.access_token);
 
-    const currentUser = await getCurrentUser(
-      result.access_token,
-    );
+    const currentUser = await getCurrentUser();
 
     setUser(currentUser);
   }

@@ -11,12 +11,16 @@ import { CategoryProvider } from "./shared/context/CategoryContext";
 
 import { AuthProvider } from "./shared/context/AuthContext";
 
+import { setupApiInterceptors } from "./shared/api/interceptors";
+
 
 import {
   BrowserRouter
 } from "react-router-dom";
 
 const queryClient = new QueryClient();
+
+setupApiInterceptors();
 
 ReactDOM.createRoot(
   document.getElementById("root")!,
