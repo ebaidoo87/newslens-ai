@@ -40,10 +40,10 @@ interface RedirectState {
 
 
 
-interface LoginLocationState extends RedirectState {
-
+interface LoginLocationState
+  extends RedirectState {
   registrationSuccess?: boolean;
-
+  passwordChanged?: boolean;
 }
 
 
@@ -184,6 +184,15 @@ export default function LoginPage() {
 
           </div>
 
+        )}
+
+
+
+        {locationState?.passwordChanged && (
+          <div className="mb-6 rounded-lg border border-green-800 bg-green-950 p-4 text-green-200">
+            Your password was changed successfully.
+            Sign in using your new password.
+          </div>
         )}
 
 

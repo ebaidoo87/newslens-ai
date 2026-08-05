@@ -13,11 +13,18 @@ import {
   updateCurrentUser,
 } from "../../../shared/services/authApi";
 
+import { useNavigate } from "react-router-dom";
+
+import {
+  logoutAllDevices,
+} from "../../../shared/services/authApi";
+
 
 export default function SettingsPage() {
   const {
-    user,
-    refreshUser,
+  user,
+  refreshUser,
+  logout,
   } = useAuth();
 
   const [username, setUsername] =
@@ -77,6 +84,12 @@ export default function SettingsPage() {
     }
   }, [user]);
 
+  const navigate = useNavigate();
+
+  const [
+  isLoggingOutEverywhere,
+  setIsLoggingOutEverywhere,
+] = useState(false);
 
   async function handleProfileSubmit(
     event: FormEvent<HTMLFormElement>,
@@ -170,6 +183,15 @@ export default function SettingsPage() {
           confirmNewPassword,
       });
 
+      logout();
+
+      navigate("/login", {
+        replace: true,
+        state: {
+          passwordChanged: true,
+        },
+      });
+
       setCurrentPasswordForChange("");
       setNewPassword("");
       setConfirmNewPassword("");
@@ -196,6 +218,22 @@ export default function SettingsPage() {
       setIsChangingPassword(false);
     }
   }
+
+  async function handleLogoutAllDevices() {
+    setIsLoggingOutEverywhere(true);
+
+    try {
+      await logoutAllDevices();
+
+    logout();
+
+    navigate("/login", {
+      replace: true,
+    });
+  } finally {
+    setIsLoggingOutEverywhere(false);
+  }
+}
 
 
   if (!user) {
@@ -466,7 +504,29 @@ export default function SettingsPage() {
         </form>
 
       </div>
+        <div className="rounded-2xl border border-red-900 bg-gray-900 p-8">
+          <div>
+            <h2 className="text-2xl font-bold">
+              Active sessions
+            </h2>
 
+            <p className="mt-2 text-gray-400">
+              Invalidate every NewsLens access token
+              currently associated with your account.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleLogoutAllDevices}
+            disabled={isLoggingOutEverywhere}
+            className="mt-6 rounded-lg border border-red-700 px-5 py-3 font-semibold text-red-300 transition hover:bg-red-950 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLoggingOutEverywhere
+              ? "Logging out..."
+              : "Log out from all devices"}
+          </button>
+      </div>
     </div>
   );
 }

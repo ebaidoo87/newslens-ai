@@ -84,3 +84,8 @@ export async function changePassword(
     payload,
   );
 }
+
+export async function logoutAllDevices():
+Promise<void> {
+  await api.post("/auth/logout-all");
+}
