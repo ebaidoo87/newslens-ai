@@ -5,6 +5,13 @@ from app.core.security import (
     hash_password,
     verify_password,
 )
+
+from app.schemas.user import (
+    UserLogin,
+    UserRegister,
+    UserUpdate,
+)
+
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import UserLogin, UserRegister
@@ -85,4 +92,58 @@ class AuthService:
         return self.repository.get_by_email(
             self.db,
             email,
+        )
+
+    def update_profile(
+        self,
+        user: User,
+        user_data: UserUpdate,
+    ) -> User:
+        if not verify_password(
+        user_data.current_password,
+        user.hashed_password,
+        ):
+            raise ValueError(
+            "Current password is incorrect"
+        )
+
+        if (
+        user_data.email
+        and user_data.email != user.email
+        ):
+            existing_email = (
+                self.repository.get_by_email(
+                    self.db,
+                    user_data.email,
+                )
+            )
+
+            if existing_email:
+                raise ValueError(
+                    "Email already exists"
+                )
+
+            user.email = user_data.email
+
+        if (
+            user_data.username
+            and user_data.username != user.username
+        ):
+            existing_username = (
+                self.repository.get_by_username(
+                    self.db,
+                    user_data.username,
+                )
+            )
+
+            if existing_username:
+                raise ValueError(
+                    "Username already exists"
+                )
+
+            user.username = user_data.username
+
+        return self.repository.update(
+            self.db,
+            user,
         )

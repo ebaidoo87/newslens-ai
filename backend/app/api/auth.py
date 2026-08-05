@@ -17,6 +17,14 @@ from app.schemas.user import (
 )
 from app.services.auth_service import AuthService
 
+from app.models.user import User
+
+from app.schemas.user import (
+    UserLogin,
+    UserRegister,
+    UserResponse,
+    UserUpdate,
+)
 
 router = APIRouter(
     prefix="/auth",
@@ -110,6 +118,29 @@ def get_current_user(
     response_model=UserResponse,
 )
 def read_current_user(
-    current_user=Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ):
     return current_user
+
+
+@router.patch(
+    "/me",
+    response_model=UserResponse,
+)
+def update_current_user(
+    user_data: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    service = AuthService(db)
+
+    try:
+        return service.update_profile(
+            current_user,
+            user_data,
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
+        ) from error

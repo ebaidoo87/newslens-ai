@@ -1,7 +1,8 @@
 from .user import (
-    UserRegister,
     UserLogin,
+    UserRegister,
     UserResponse,
+    UserUpdate,
 )
 
 from .token import (
