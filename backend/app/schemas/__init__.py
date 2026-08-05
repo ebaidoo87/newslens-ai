@@ -9,3 +9,11 @@ from .token import (
     Token,
     TokenData,
 )
+
+from .user import (
+    PasswordChange,
+    UserLogin,
+    UserRegister,
+    UserResponse,
+    UserUpdate,
+)

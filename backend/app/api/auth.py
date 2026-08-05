@@ -26,6 +26,15 @@ from app.schemas.user import (
     UserUpdate,
 )
 
+from app.schemas.user import (
+    PasswordChange,
+    UserLogin,
+    UserRegister,
+    UserResponse,
+    UserUpdate,
+)
+
+
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
@@ -144,3 +153,31 @@ def update_current_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(error),
         ) from error
+
+
+@router.patch(
+    "/password",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def change_current_user_password(
+    password_data: PasswordChange,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db),
+):
+    service = AuthService(db)
+
+    try:
+        service.change_password(
+            current_user,
+            password_data,
+        )
+
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
+        ) from error
+
+    return None

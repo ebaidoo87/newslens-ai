@@ -12,6 +12,13 @@ from app.schemas.user import (
     UserUpdate,
 )
 
+from app.schemas.user import (
+    PasswordChange,
+    UserLogin,
+    UserRegister,
+    UserUpdate,
+)
+
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import UserLogin, UserRegister
@@ -144,6 +151,45 @@ class AuthService:
             user.username = user_data.username
 
         return self.repository.update(
+            self.db,
+            user,
+        )
+
+    def change_password(
+        self,
+        user: User,
+        password_data: PasswordChange,
+    ) -> None:
+        if not verify_password(
+            password_data.current_password,
+            user.hashed_password,
+        ):
+            raise ValueError(
+                "Current password is incorrect"
+            )
+
+        if (
+            password_data.new_password
+            != password_data.confirm_new_password
+        ):
+            raise ValueError(
+                "New passwords do not match"
+            )
+
+        if (
+            password_data.current_password
+            == password_data.new_password
+        ):
+            raise ValueError(
+                "New password must be different "
+                "from the current password"
+            )
+
+        user.hashed_password = hash_password(
+            password_data.new_password
+        )
+
+        self.repository.update(
             self.db,
             user,
         )
