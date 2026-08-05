@@ -22,6 +22,19 @@ export interface AuthUser {
   username: string;
 }
 
+export interface UpdateProfilePayload {
+  username?: string;
+  email?: string;
+  current_password: string;
+}
+
+
+export interface ChangePasswordPayload {
+  current_password: string;
+  new_password: string;
+  confirm_new_password: string;
+}
+
 export async function loginUser(
   credentials: LoginCredentials,
 ): Promise<AuthToken> {
@@ -52,3 +65,22 @@ Promise<AuthUser> {
   return response.data;
 }
 
+export async function updateCurrentUser(
+  payload: UpdateProfilePayload,
+): Promise<AuthUser> {
+  const response = await api.patch<AuthUser>(
+    "/auth/me",
+    payload,
+  );
+
+  return response.data;
+}
+
+export async function changePassword(
+  payload: ChangePasswordPayload,
+): Promise<void> {
+  await api.patch(
+    "/auth/password",
+    payload,
+  );
+}

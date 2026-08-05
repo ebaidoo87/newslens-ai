@@ -13,6 +13,10 @@ import {
   type LoginCredentials,
 } from "../services/authApi";
 
+import {
+  TOKEN_STORAGE_KEY,
+} from "../api/interceptors";
+
 interface AuthContextType {
   user: AuthUser | null;
   token: string | null;
@@ -20,13 +24,13 @@ interface AuthContextType {
   isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
-}
 
+  refreshUser: () => Promise<void>;
+} 
+  
 const AuthContext = createContext<
   AuthContextType | undefined
 >(undefined);
-
-const TOKEN_STORAGE_KEY = "newslens_access_token";
 
 export function AuthProvider({
   children,
@@ -41,6 +45,14 @@ export function AuthProvider({
 
   const [isLoading, setIsLoading] = useState(true);
 
+  async function refreshUser(): Promise<void> {
+    const currentUser =
+      await getCurrentUser();
+
+    setUser(currentUser);
+  }
+
+
   useEffect(() => {
     async function restoreSession() {
       if (!token) {
@@ -49,11 +61,12 @@ export function AuthProvider({
       }
 
       try {
-        const currentUser = await getCurrentUser();
-
-        setUser(currentUser);
+        await refreshUser();
       } catch {
-        localStorage.removeItem(TOKEN_STORAGE_KEY);
+        localStorage.removeItem(
+          TOKEN_STORAGE_KEY,
+        );
+
         setToken(null);
         setUser(null);
       } finally {
@@ -66,8 +79,9 @@ export function AuthProvider({
 
   async function login(
     credentials: LoginCredentials,
-  ) {
-    const result = await loginUser(credentials);
+  ): Promise<void> {
+    const result =
+      await loginUser(credentials);
 
     localStorage.setItem(
       TOKEN_STORAGE_KEY,
@@ -81,8 +95,10 @@ export function AuthProvider({
     setUser(currentUser);
   }
 
-  function logout() {
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
+  function logout(): void {
+    localStorage.removeItem(
+      TOKEN_STORAGE_KEY,
+    );
 
     setToken(null);
     setUser(null);
@@ -97,6 +113,7 @@ export function AuthProvider({
         isLoading,
         login,
         logout,
+        refreshUser,
       }}
     >
       {children}
@@ -104,8 +121,9 @@ export function AuthProvider({
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
+export function useAuth(): AuthContextType {
+  const context =
+    useContext(AuthContext);
 
   if (!context) {
     throw new Error(

@@ -5,7 +5,7 @@ import type {
 
 import { api } from "../services/api";
 
-const TOKEN_STORAGE_KEY =
+export const TOKEN_STORAGE_KEY =
   "newslens_access_token";
 
 export function setupApiInterceptors() {
