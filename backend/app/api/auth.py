@@ -107,19 +107,33 @@ def get_current_user(
     if not payload:
         raise credentials_error
 
-    email = payload.get("sub")
+    
+    user_id = payload.get("user_id")
+    token_version = payload.get(
+        "token_version"
+    )
 
-    if not email:
+    if user_id is None:
+        raise credentials_error
+
+    if token_version is None:
         raise credentials_error
 
     service = AuthService(db)
 
-    user = service.get_current_user(email)
+    user = service.get_current_user_by_id(
+        user_id
+    )
 
     if not user:
         raise credentials_error
 
+    if user.token_version != token_version:
+            raise credentials_error
+    
     return user
+
+    
 
 
 @router.get(
@@ -179,5 +193,23 @@ def change_current_user_password(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(error),
         ) from error
+
+    return None
+
+@router.post(
+    "/logout-all",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def logout_from_all_devices(
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db),
+):
+    service = AuthService(db)
+
+    service.revoke_all_sessions(
+        current_user
+    )
 
     return None

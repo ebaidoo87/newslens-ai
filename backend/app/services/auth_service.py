@@ -84,6 +84,7 @@ class AuthService:
             {
                 "sub": user.email,
                 "user_id": user.id,
+                "token_version": user.token_version,
             }
         )
 
@@ -189,7 +190,29 @@ class AuthService:
             password_data.new_password
         )
 
+        user.token_version += 1
+
         self.repository.update(
+            self.db,
+            user,
+        )
+
+    def get_current_user_by_id(
+        self,
+        user_id: int,
+    ) -> User | None:
+        return self.repository.get_by_id(
+            self.db,
+            user_id,
+        )
+
+    def revoke_all_sessions(
+        self,
+        user: User,
+    ) -> User:
+        user.token_version += 1
+
+        return self.repository.update(
             self.db,
             user,
         )

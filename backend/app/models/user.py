@@ -5,6 +5,7 @@ from sqlalchemy.sql import func
 from app.db.base import Base
 
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -30,6 +31,13 @@ class User(Base):
 
     hashed_password: Mapped[str] = mapped_column(
         String(255),
+        nullable=False,
+    )
+
+    token_version: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        server_default="0",
         nullable=False,
     )
 
