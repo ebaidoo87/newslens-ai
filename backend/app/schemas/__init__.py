@@ -23,3 +23,8 @@ from .bookmark import (
     BookmarkResponse,
     BookmarkStatusResponse,
 )
+
+from .reading_history import (
+    ReadingHistoryResponse,
+    ViewedArticleResponse,
+)

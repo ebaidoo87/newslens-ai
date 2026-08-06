@@ -11,6 +11,12 @@ from sqlalchemy.orm import (
     relationship,
 )
 
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
+
 
 class User(Base):
     __tablename__ = "users"
@@ -66,3 +72,10 @@ class User(Base):
     cascade="all, delete-orphan",
     passive_deletes=True,
     )
+
+    reading_history = relationship(
+    "ReadingHistory",
+    back_populates="user",
+    cascade="all, delete-orphan",
+    passive_deletes=True,
+)
