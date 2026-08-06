@@ -21,6 +21,8 @@ import {
 
 import CategoryPreferences from "../components/CategoryPreferences";
 
+import CountryPreferences from "../components/CountryPreferences";
+
 
 export default function SettingsPage() {
   const {
@@ -261,6 +263,8 @@ export default function SettingsPage() {
       </div>
 
       <CategoryPreferences />
+
+      <CountryPreferences />
 
 
       <div className="rounded-2xl border border-gray-800 bg-gray-900 p-8">
