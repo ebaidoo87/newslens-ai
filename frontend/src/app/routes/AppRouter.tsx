@@ -21,6 +21,10 @@ import RecentlyViewedPage from "../../features/history/pages/RecentlyViewedPage"
 
 import RecommendedPage from "../../features/recommendations/pages/RecommendedPage";
 
+import TrendingPage from "../../features/trending/pages/TrendingPage";
+
+import DiscoverPage from "../../features/discovery/pages/DiscoverPage";
+
 export default function AppRouter() {
   return (
     <MainLayout>
@@ -98,6 +102,20 @@ export default function AppRouter() {
             <ProtectedRoute>
               <RecentlyViewedPage />
           </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/trending"
+          element={<TrendingPage />}
+        />
+
+        <Route
+          path="/discover"
+          element={
+            <ProtectedRoute>
+              <DiscoverPage />
+            </ProtectedRoute>
           }
         />
     

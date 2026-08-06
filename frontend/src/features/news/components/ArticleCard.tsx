@@ -40,7 +40,7 @@ const readingTime =
   );
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900 transition duration-200 hover:-translate-y-1 hover:border-blue-500 hover:shadow-xl">
+    <article className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900 transition duration-200 hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-xl">
 
       {article.image_url && (
         <ArticleImage

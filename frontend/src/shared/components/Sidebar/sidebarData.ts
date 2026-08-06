@@ -6,6 +6,8 @@ import {
   Search,
   Settings,
   Sparkles,
+  Flame,
+  Compass,
 } from "lucide-react";
 
 
@@ -21,9 +23,19 @@ export const sidebarItems = [
     icon: Newspaper,
   },
   {
+  label: "Trending",
+  path: "/trending",
+  icon: Flame,
+  },
+  {
   label: "For You",
   path: "/recommended",
   icon: Sparkles,
+  },
+  {
+  label: "Discover",
+  path: "/discover",
+  icon: Compass,
   },
   {
     label: "Search",
