@@ -23,6 +23,8 @@ import CategoryPreferences from "../components/CategoryPreferences";
 
 import CountryPreferences from "../components/CountryPreferences";
 
+import KeywordPreferences from "../components/KeywordPreferences";
+
 
 export default function SettingsPage() {
   const {
@@ -265,6 +267,8 @@ export default function SettingsPage() {
       <CategoryPreferences />
 
       <CountryPreferences />
+
+      <KeywordPreferences />
 
 
       <div className="rounded-2xl border border-gray-800 bg-gray-900 p-8">
