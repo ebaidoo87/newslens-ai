@@ -15,6 +15,8 @@ import ProtectedRoute from "../../features/auth/components/ProtectedRoute";
 
 import RegisterPage from "../../features/auth/pages/RegisterPage";
 
+import SavedArticlesPage from "../../features/bookmarks/pages/SavedArticlesPage";
+
 export default function AppRouter() {
   return (
     <MainLayout>
@@ -62,7 +64,21 @@ export default function AppRouter() {
           path="*" 
           element={<NotFoundPage />} 
         />
-
+        
+        <Route
+          path="/saved"
+          element={
+        <SavedArticlesPage />
+          }
+        />
+        <Route
+          path="/saved"
+          element={
+            <ProtectedRoute>
+              <SavedArticlesPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </MainLayout>
   );

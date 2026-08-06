@@ -1,35 +1,43 @@
 import {
-  LayoutDashboard,
+  Home,
   Search,
   Newspaper,
   Bell,
   Settings,
+  Bookmark,
 } from "lucide-react";
+
 
 export const sidebarItems = [
   {
-    title: "Dashboard",
+    label: "Dashboard",
     path: "/",
-    icon: LayoutDashboard,
+    icon: Home,
   },
+
   {
-    title: "Search",
+    label: "Search",
     path: "/search",
     icon: Search,
   },
   {
-    title: "News",
+    label: "News",
     path: "/news",
     icon: Newspaper,
   },
   {
-    title: "Alerts",
+    label: "Alerts",
     path: "/alerts",
     icon: Bell,
   },
   {
-    title: "Settings",
+    label: "Settings",
     path: "/settings",
     icon: Settings,
+  },
+  {
+  label: "Saved Articles",
+  path: "/saved",
+  icon: Bookmark,
   },
 ];

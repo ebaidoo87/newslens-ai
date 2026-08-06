@@ -5,6 +5,11 @@ import { getArticleById } from "../../../shared/services/articleApi";
 
 import type { Article } from "../../news/types/article";
 
+import {
+  getCountryMetadata,
+} from "../../../shared/utils/countries";
+
+
 export default function ArticleDetailPage() {
   const { id } = useParams();
 
@@ -15,6 +20,8 @@ export default function ArticleDetailPage() {
   const [loading, setLoading] = useState(true);
 
   const [error, setError] = useState(false);
+
+  
 
   useEffect(() => {
     async function loadArticle() {
@@ -69,6 +76,8 @@ export default function ArticleDetailPage() {
     );
   }
 
+  const country = getCountryMetadata(article.country);
+
   return (
     <article className="mx-auto max-w-4xl space-y-8">
 
@@ -103,6 +112,10 @@ export default function ArticleDetailPage() {
             {article.published_at
               ? new Date(article.published_at).toLocaleDateString()
               : new Date(article.created_at).toLocaleDateString()}
+          </span>
+
+          <span>
+            {country.flag} {country.name}
           </span>
 
         </div>

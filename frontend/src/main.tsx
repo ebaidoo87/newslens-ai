@@ -13,6 +13,10 @@ import { AuthProvider } from "./shared/context/AuthContext";
 
 import { setupApiInterceptors } from "./shared/api/interceptors";
 
+import {
+  BookmarkProvider,
+} from "./shared/context/BookmarkContext";
+
 
 import {
   BrowserRouter
@@ -29,11 +33,13 @@ ReactDOM.createRoot(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <SearchProvider>
-            <CategoryProvider>
-              <App />
-            </CategoryProvider>
-          </SearchProvider>
+          <BookmarkProvider>
+            <SearchProvider>
+              <CategoryProvider>
+                <App />
+              </CategoryProvider>
+            </SearchProvider>
+          </BookmarkProvider>
         </AuthProvider>
       </QueryClientProvider>
     </BrowserRouter>
