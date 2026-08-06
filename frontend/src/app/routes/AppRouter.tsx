@@ -19,6 +19,8 @@ import SavedArticlesPage from "../../features/bookmarks/pages/SavedArticlesPage"
 
 import RecentlyViewedPage from "../../features/history/pages/RecentlyViewedPage";
 
+import RecommendedPage from "../../features/recommendations/pages/RecommendedPage";
+
 export default function AppRouter() {
   return (
     <MainLayout>
@@ -37,6 +39,15 @@ export default function AppRouter() {
         <Route 
           path="/news" 
           element={<NewsPage />} 
+        />
+
+        <Route
+          path="/recommended"
+          element={
+            <ProtectedRoute>
+              <RecommendedPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
@@ -89,6 +100,7 @@ export default function AppRouter() {
           </ProtectedRoute>
           }
         />
+    
       </Routes>
     </MainLayout>
   );

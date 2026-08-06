@@ -7,12 +7,15 @@ import {
 
 import { useDashboardStats } from "./hooks/useDashboardStats";
 
+import RecommendedPreview from "./components/RecommendedPreview";
+
 export default function DashboardPage() {
   const {
     data,
     isLoading,
     isError,
   } = useDashboardStats();
+  
 
   if (isError) {
     return (
@@ -45,6 +48,10 @@ export default function DashboardPage() {
         isLoading={isLoading}
       />
 
+      <RecommendedPreview />
+
+      <LatestHeadlines />
+
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <LatestHeadlines />
@@ -54,6 +61,7 @@ export default function DashboardPage() {
       </div>
 
       <QuickActions />
+      
     </div>
   );
 }
