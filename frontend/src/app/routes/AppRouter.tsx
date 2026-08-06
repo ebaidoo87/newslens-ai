@@ -17,6 +17,8 @@ import RegisterPage from "../../features/auth/pages/RegisterPage";
 
 import SavedArticlesPage from "../../features/bookmarks/pages/SavedArticlesPage";
 
+import RecentlyViewedPage from "../../features/history/pages/RecentlyViewedPage";
+
 export default function AppRouter() {
   return (
     <MainLayout>
@@ -77,6 +79,14 @@ export default function AppRouter() {
             <ProtectedRoute>
               <SavedArticlesPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <RecentlyViewedPage />
+          </ProtectedRoute>
           }
         />
       </Routes>
