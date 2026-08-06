@@ -34,3 +34,7 @@ from .user_preference import (
     UserPreferencesResponse,
     UserPreferencesUpdate,
 )
+
+from .recommendation import (
+    RecommendedArticleResponse,
+)

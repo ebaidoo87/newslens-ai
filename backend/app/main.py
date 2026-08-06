@@ -34,6 +34,10 @@ from app.api.preferences import (
     router as preferences_router,
 )
 
+from app.api.recommendations import (
+    router as recommendations_router,
+)
+
 
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
@@ -93,6 +97,12 @@ app.include_router(
     preferences_router,
     prefix=settings.api_prefix,
 )
+
+app.include_router(
+    recommendations_router,
+    prefix=settings.api_prefix,
+)
+
 
 logger.info("Starting NewsLens AI")
 
