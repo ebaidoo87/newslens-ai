@@ -17,3 +17,9 @@ from .user import (
     UserResponse,
     UserUpdate,
 )
+
+from .bookmark import (
+    BookmarkedArticleResponse,
+    BookmarkResponse,
+    BookmarkStatusResponse,
+)

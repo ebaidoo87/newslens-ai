@@ -5,6 +5,11 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
 
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
 
 class Article(Base):
     __tablename__ = "articles"
@@ -18,7 +23,7 @@ class Article(Base):
     content: Mapped[str | None] = mapped_column(Text)
 
     url: Mapped[str] = mapped_column(String(1000), unique=True)
-    
+
 
     image_url: Mapped[str | None] = mapped_column(String(1000),nullable=True,
 )
@@ -44,4 +49,11 @@ class Article(Base):
         DateTime,
         default=datetime.utcnow,
         onupdate=datetime.utcnow,
+    )
+
+    bookmarks = relationship(
+    "Bookmark",
+    back_populates="article",
+    cascade="all, delete-orphan",
+    passive_deletes=True,
     )

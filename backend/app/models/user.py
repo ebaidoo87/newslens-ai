@@ -5,6 +5,12 @@ from sqlalchemy.sql import func
 from app.db.base import Base
 
 
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
+
 
 class User(Base):
     __tablename__ = "users"
@@ -52,4 +58,11 @@ class User(Base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    bookmarks = relationship(
+    "Bookmark",
+    back_populates="user",
+    cascade="all, delete-orphan",
+    passive_deletes=True,
     )

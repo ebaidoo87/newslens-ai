@@ -1,48 +1,77 @@
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.interval import IntervalTrigger
+from apscheduler.schedulers.asyncio import (
+    AsyncIOScheduler,
+)
+from apscheduler.triggers.interval import (
+    IntervalTrigger,
+)
 
-
+from app.data.category_queries import (
+    CATEGORY_QUERIES,
+)
 from app.db.session import SessionLocal
-from app.services.import_service import ImportService
+from app.services.import_service import (
+    ImportService,
+)
+
 
 scheduler = AsyncIOScheduler()
 
-import_service = None
+CATEGORIES = list(
+    CATEGORY_QUERIES.keys()
+)
+
 
 async def import_job():
     db = SessionLocal()
 
     try:
-        import_service = ImportService(db)
+        service = ImportService(db)
 
-        result = await import_service.import_articles()
+        for category in CATEGORIES:
+            try:
+                result = (
+                    await service.import_articles(
+                        category=category,
+                    )
+                )
 
-        print(
-            f"📰 Imported "
-            f"{result['imported']} "
-            f"of "
-            f"{result['received']} "
-            f"articles."
-        )
+                print(
+                    f"📰 {category}: imported "
+                    f"{result['imported']} of "
+                    f"{result['received']} articles."
+                )
 
-    except Exception as e:
-        print(f"❌ Import failed: {e}")
+            except RuntimeError as error:
+                print(
+                    f"❌ Import stopped: {error}"
+                )
+
+                # Stop the loop after a rate limit.
+                break
+
+            except Exception as error:
+                print(
+                    f"❌ {category} failed: "
+                    f"{error}"
+                )
 
     finally:
         db.close()
 
 
 def start_scheduler():
-    if not scheduler.running:
-        scheduler.add_job(
-            import_job,
-            IntervalTrigger(hours=1),
-            id="news-import",
-            replace_existing=True,
-            max_instances=1,
-            coalesce=True,
-        )
+    if scheduler.running:
+        return
 
-        scheduler.start()
+    scheduler.add_job(
+        import_job,
+        IntervalTrigger(hours=6),
+        id="news-import",
+        replace_existing=True,
+        max_instances=1,
+        coalesce=True,
+    )
 
-        print("🚀 Scheduler started.")
+    scheduler.start()
+
+    print("🚀 News scheduler started.")

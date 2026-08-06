@@ -1,9 +1,28 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
+from app.data.category_queries import (
+    CATEGORY_QUERIES,
+)
+from app.data.source_metadata import (
+    get_source_metadata,
+)
 from app.models.article import Article
-from app.repositories.article_repository import ArticleRepository
-from app.services.news_provider import NewsProvider
+from app.repositories.article_repository import (
+    ArticleRepository,
+)
+from app.services.news_provider import (
+    NewsProvider,
+)
 
+from langdetect import (
+    DetectorFactory,
+    LangDetectException,
+    detect,
+)
+
+DetectorFactory.seed = 0
 
 class ImportService:
 
@@ -12,45 +31,164 @@ class ImportService:
         self.provider = NewsProvider()
         self.repository = ArticleRepository()
 
-    async def import_articles(self):
-        response = await self.provider.get_top_headlines()
 
-        imported = 0
+    @staticmethod
+    def parse_published_at(
+        value: str | None,
+    ) -> datetime | None:
+        if not value:
+            return None
 
-        for item in response.get("articles", []):
+        try:
+            return datetime.fromisoformat(
+                value.replace("Z", "+00:00")
+            )
+        except ValueError:
+            return None
 
-            url = item.get("url")
 
-            if not url:
-                continue
+    async def import_articles(
+        self,
+        category: str,
+    ) -> dict:
+        query = CATEGORY_QUERIES.get(category)
 
-            existing = self.repository.get_by_url(self.db,url,)
-            
-
-            if existing:
-                continue
-
-            article = Article(
-                title=item.get("title"),
-                summary=item.get("description"),
-                content=item.get("content"),
-                url=url,
-                
-                image_url=(item.get("urlToImage")or item.get("image")),
-
-                source=item.get("source", {}).get("name"),
-                author=item.get("author"),
-                language="en",
-                country="us",
-                category="technology",
+        if not query:
+            raise ValueError(
+                "Unsupported news category"
             )
 
-            self.repository.create(self.db,article,)
+        response = (
+            await self.provider.search_articles(
+                query=query,
+            )
+        )
+
+        articles = response.get("articles", [])
+
+        imported = 0
+        skipped = 0
+
+        country_counts: dict[str, int] = {}
+
+        for item in articles:
+            url = item.get("url")
+            title = item.get("title")
+            summary = item.get("description")
+            content = item.get("content")
+
+            if not url or not title:
+                skipped += 1
+                continue
+
+            if not self.is_english_article(
+                title=title,
+                summary=summary,
+                content=content,
+            ):
+                skipped += 1
+                continue
+
+            existing = self.repository.get_by_url(
+                self.db,
+                url,
+            )
+
+            if existing:
+                skipped += 1
+                continue
+
+            source_data = item.get("source") or {}
+
+            raw_source_name = (
+                source_data.get("name")
+                or "Unknown"
+            )
+
+            source_metadata = get_source_metadata(
+                source_name=raw_source_name,
+                article_url=url,
+            )
+
+            source_name = (
+                source_metadata.display_name
+                or raw_source_name
+            )
+
+            article = Article(
+                title=title,
+                summary=summary,
+                content=content,
+                url=url,
+                image_url=item.get("urlToImage"),
+                source=source_name,
+                author=item.get("author"),
+                language="en",
+                country=source_metadata.country,
+                category=category,
+                published_at=self.parse_published_at(
+                    item.get("publishedAt")
+                ),
+            )
+
+            self.repository.create(
+                self.db,
+                article,
+            )
 
             imported += 1
 
+            language_skipped = 0
+
+            if not self.is_english_article(
+                title=title,
+                summary=summary,
+                content=content,
+            ):
+                language_skipped += 1
+                skipped += 1
+                continue
+
+            country_counts[
+                source_metadata.country
+            ] = (
+                country_counts.get(
+                    source_metadata.country,
+                    0,
+                )
+                + 1
+            )
+
         return {
-            "received": len(response.get("articles", [])),
+            "category": category,
+            "received": len(articles),
             "imported": imported,
+            "skipped": skipped,
+            "language_skipped": language_skipped,
+            "countries": country_counts,
         }
-    
+
+    @staticmethod
+    def is_english_article(
+        title: str | None,
+        summary: str | None,
+        content: str | None,
+) -> bool:
+        text = " ".join(
+            part.strip()
+            for part in (
+                title,
+                summary,
+                content,
+            )
+        if part and part.strip()
+    )
+
+    # Very short text is unreliable for detection.
+        if len(text) < 40:
+            return True
+
+        try:
+            return detect(text) == "en"
+        except LangDetectException:
+            return False
