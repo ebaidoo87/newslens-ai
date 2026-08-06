@@ -26,6 +26,10 @@ import {
   ToastProvider,
 } from "./shared/context/ToastContext";
 
+import {
+  ReadingHistoryProvider,
+} from "./shared/context/ReadingHistoryContext";
+
 
 const queryClient = new QueryClient();
 
@@ -40,11 +44,13 @@ ReactDOM.createRoot(
         <AuthProvider>
           <ToastProvider>
             <BookmarkProvider>
-              <SearchProvider>
-                <CategoryProvider>
-                  <App />
-                </CategoryProvider>
-              </SearchProvider>
+              <ReadingHistoryProvider>
+                <SearchProvider>
+                  <CategoryProvider>
+                    <App />
+                  </CategoryProvider>
+                </SearchProvider>
+              </ReadingHistoryProvider>
             </BookmarkProvider>
           </ToastProvider>
         </AuthProvider>

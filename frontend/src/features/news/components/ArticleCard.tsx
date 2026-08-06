@@ -46,6 +46,7 @@ const readingTime =
         <ArticleImage
             src={article.image_url}
             alt={article.title}
+            articleId={article.id}
         />
       )}
 

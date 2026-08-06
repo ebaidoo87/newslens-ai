@@ -90,6 +90,10 @@ import type {
 
 } from "../../news/types/article";
 
+import {
+  useReadingHistory,
+} from "../../../shared/context/ReadingHistoryContext";
+
 
 
 
@@ -143,6 +147,10 @@ export default function ArticleDetailPage() {
     setError,
 
   ] = useState("");
+
+  const {
+  refreshHistory,
+} = useReadingHistory();
 
 
 
@@ -241,40 +249,31 @@ export default function ArticleDetailPage() {
 
 
   useEffect(() => {
+  if (
+    !isAuthenticated
+    || !article?.id
+  ) {
+    return;
+  }
 
-    if (
+  async function recordView() {
+    try {
+      await recordArticleView(
+        article!.id,
+      );
 
-      !isAuthenticated
-
-      || !article?.id
-
-    ) {
-
-      return;
-
+      await refreshHistory();
+    } catch {
+      // History tracking should not
+      // interrupt article viewing.
     }
+  }
 
-
-
-    recordArticleView(
-
-      article.id,
-
-    ).catch(() => {
-
-      // Reading-history errors should not
-
-      // prevent the article from displaying.
-
-    });
-
-  }, [
-
-    article?.id,
-
-    isAuthenticated,
-
-  ]);
+  recordView();
+}, [
+  article?.id,
+  isAuthenticated,
+]);
 
 
 

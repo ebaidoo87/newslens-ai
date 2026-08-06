@@ -1,9 +1,4 @@
 import {
-  useEffect,
-  useState,
-} from "react";
-
-import {
   Clock3,
   Trash2,
 } from "lucide-react";
@@ -11,10 +6,8 @@ import {
 import ArticleCard from "../../news/components/ArticleCard";
 
 import {
-  clearReadingHistory,
-  getReadingHistory,
-  type ReadingHistoryItem,
-} from "../../../shared/services/readingHistoryApi";
+  useReadingHistory,
+} from "../../../shared/context/ReadingHistoryContext";
 
 import {
   useToast,
@@ -22,45 +15,15 @@ import {
 
 
 export default function RecentlyViewedPage() {
-  const [
+  const {
     history,
-    setHistory,
-  ] = useState<ReadingHistoryItem[]>([]);
-
-  const [
     isLoading,
-    setIsLoading,
-  ] = useState(true);
-
-  const [
-    isClearing,
-    setIsClearing,
-  ] = useState(false);
+    clearHistory,
+  } = useReadingHistory();
 
   const {
     showToast,
   } = useToast();
-
-
-  useEffect(() => {
-    async function loadHistory() {
-      try {
-        const data =
-          await getReadingHistory();
-
-        setHistory(data);
-      } catch {
-        showToast(
-          "Unable to load reading history.",
-          "error",
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadHistory();
-  }, [showToast]);
 
 
   async function handleClearHistory() {
@@ -68,28 +31,18 @@ export default function RecentlyViewedPage() {
       return;
     }
 
-    const previousHistory =
-      history;
-
-    setHistory([]);
-    setIsClearing(true);
-
     try {
-      await clearReadingHistory();
+      await clearHistory();
 
       showToast(
         "Reading history cleared.",
         "success",
       );
     } catch {
-      setHistory(previousHistory);
-
       showToast(
         "Unable to clear reading history.",
         "error",
       );
-    } finally {
-      setIsClearing(false);
     }
   }
 
@@ -112,7 +65,9 @@ export default function RecentlyViewedPage() {
           </h1>
 
           <p className="mt-2 text-gray-400">
-            Articles you recently opened.
+            {history.length === 1
+              ? "1 recently viewed article."
+              : `${history.length} recently viewed articles.`}
           </p>
         </div>
 
@@ -120,18 +75,14 @@ export default function RecentlyViewedPage() {
           <button
             type="button"
             onClick={handleClearHistory}
-            disabled={isClearing}
-            className="inline-flex items-center gap-2 rounded-lg border border-red-800 px-4 py-2 text-sm font-medium text-red-300 transition hover:bg-red-950 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-lg border border-red-800 px-4 py-2 text-sm font-medium text-red-300 transition hover:bg-red-950"
           >
             <Trash2 size={17} />
 
-            {isClearing
-              ? "Clearing..."
-              : "Clear history"}
+            Clear history
           </button>
         )}
       </div>
-
 
       {history.length === 0 ? (
         <div className="rounded-2xl border border-gray-800 bg-gray-900 px-6 py-16 text-center">
@@ -151,25 +102,23 @@ export default function RecentlyViewedPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {history.map(
-            (item) => (
-              <div
-                key={item.id}
-                className="space-y-2"
-              >
-                <p className="text-sm text-gray-500">
-                  Viewed{" "}
-                  {new Date(
-                    item.viewed_at,
-                  ).toLocaleString()}
-                </p>
+          {history.map((item) => (
+            <div
+              key={item.id}
+              className="space-y-2"
+            >
+              <p className="text-sm text-gray-500">
+                Viewed{" "}
+                {new Date(
+                  item.viewed_at,
+                ).toLocaleString()}
+              </p>
 
-                <ArticleCard
-                  article={item.article}
-                />
-              </div>
-            ),
-          )}
+              <ArticleCard
+                article={item.article}
+              />
+            </div>
+          ))}
         </div>
       )}
     </div>
