@@ -38,3 +38,11 @@ from .user_preference import (
 from .recommendation import (
     RecommendedArticleResponse,
 )
+
+from .trending import (
+    TrendingArticleResponse,
+)
+
+from .discovery import (
+    DiscoveredArticleResponse,
+)
