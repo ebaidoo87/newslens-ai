@@ -30,6 +30,10 @@ import {
   ReadingHistoryProvider,
 } from "./shared/context/ReadingHistoryContext";
 
+import {
+  PreferenceProvider,
+} from "./shared/context/PreferenceContext";
+
 
 const queryClient = new QueryClient();
 
@@ -45,11 +49,13 @@ ReactDOM.createRoot(
           <ToastProvider>
             <BookmarkProvider>
               <ReadingHistoryProvider>
-                <SearchProvider>
-                  <CategoryProvider>
-                    <App />
-                  </CategoryProvider>
-                </SearchProvider>
+                <PreferenceProvider>
+                  <SearchProvider>
+                    <CategoryProvider>
+                      <App />
+                    </CategoryProvider>
+                  </SearchProvider>
+                </PreferenceProvider>
               </ReadingHistoryProvider>
             </BookmarkProvider>
           </ToastProvider>

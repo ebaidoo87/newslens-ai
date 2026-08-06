@@ -19,6 +19,8 @@ import {
   logoutAllDevices,
 } from "../../../shared/services/authApi";
 
+import CategoryPreferences from "../components/CategoryPreferences";
+
 
 export default function SettingsPage() {
   const {
@@ -258,6 +260,8 @@ export default function SettingsPage() {
         </p>
       </div>
 
+      <CategoryPreferences />
+
 
       <div className="rounded-2xl border border-gray-800 bg-gray-900 p-8">
 
@@ -265,6 +269,7 @@ export default function SettingsPage() {
           <h2 className="text-2xl font-bold">
             Profile details
           </h2>
+
 
           <p className="mt-2 text-gray-400">
             Update your username and email address.
