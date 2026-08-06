@@ -8,6 +8,13 @@ import type { Article } from "../types/article";
 
 import BookmarkButton from "../../bookmarks/components/BookmarkButton";
 
+import ArticleImage from "../../../shared/components/ArticleImage/ArticleImage";
+
+import {
+  getReadingTime,
+  getRelativeTime,
+} from "../../../shared/utils/articleMeta";
+
 
 interface ArticleCardProps {
   article: Article;
@@ -21,19 +28,24 @@ export default function ArticleCard({
     article.country,
   );
 
+  const relativeTime =
+  getRelativeTime(
+    article.published_at,
+  );
+
+const readingTime =
+  getReadingTime(
+    article.content,
+    article.summary,
+  );
+
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900 transition duration-200 hover:-translate-y-1 hover:border-blue-500 hover:shadow-xl">
 
       {article.image_url && (
-        <img
-          src={article.image_url}
-          alt=""
-          loading="lazy"
-          className="h-48 w-full object-cover"
-          onError={(event) => {
-            event.currentTarget.style.display =
-              "none";
-          }}
+        <ArticleImage
+            src={article.image_url}
+            alt={article.title}
         />
       )}
 
@@ -45,6 +57,10 @@ export default function ArticleCard({
 
           <span className="rounded-full bg-gray-800 px-3 py-1 text-xs text-gray-300">
             {country.flag} {country.name}
+          </span>
+          
+          <span className="rounded-full bg-blue-950 px-3 py-1 text-xs font-medium capitalize text-blue-300">
+            {readingTime}
           </span>
         </div>
 
@@ -83,14 +99,14 @@ export default function ArticleCard({
                 to={`/articles/${article.id}`}
                 className="font-medium text-blue-400 hover:text-blue-300"
             >
-                View details →
+                View details...
             </Link>
 
             <a
                 href={article.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-green-400 hover:text-green-300"
+                className="font-medium text-white-400 hover:text-white-300"
             >
                 Visit source ↗
             </a>
@@ -98,9 +114,18 @@ export default function ArticleCard({
             <BookmarkButton
                 article={article}
             />
+
          </div>
+         
         </div>
+        <div className="mt-4 pt-1">
+          <span className="rounded-full bg-blue-950 px-3 py-1 text-xs font-medium capitalize text-blue-300">
+            {relativeTime}
+          </span>
+          </div>
       </div>
+      
+    
 
     </article>
   );
