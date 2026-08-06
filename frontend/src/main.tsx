@@ -22,6 +22,11 @@ import {
   BrowserRouter
 } from "react-router-dom";
 
+import {
+  ToastProvider,
+} from "./shared/context/ToastContext";
+
+
 const queryClient = new QueryClient();
 
 setupApiInterceptors();
@@ -33,13 +38,15 @@ ReactDOM.createRoot(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <BookmarkProvider>
-            <SearchProvider>
-              <CategoryProvider>
-                <App />
-              </CategoryProvider>
-            </SearchProvider>
-          </BookmarkProvider>
+          <ToastProvider>
+            <BookmarkProvider>
+              <SearchProvider>
+                <CategoryProvider>
+                  <App />
+                </CategoryProvider>
+              </SearchProvider>
+            </BookmarkProvider>
+          </ToastProvider>
         </AuthProvider>
       </QueryClientProvider>
     </BrowserRouter>

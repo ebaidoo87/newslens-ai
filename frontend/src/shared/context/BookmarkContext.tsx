@@ -107,24 +107,28 @@ export function BookmarkProvider({
     return;
   }
 
-  const temporaryBookmark: BookmarkedArticle = {
+  const temporaryBookmark:
+  BookmarkedArticle = {
     id: -article.id,
-    created_at: new Date().toISOString(),
+    created_at:
+      new Date().toISOString(),
     article,
   };
 
-  setBookmarks((currentBookmarks) => [
+  setBookmarks((current) => [
     temporaryBookmark,
-    ...currentBookmarks,
+    ...current,
   ]);
 
   try {
-    await addBookmarkRequest(article.id);
+    await addBookmarkRequest(
+      article.id,
+    );
 
     await refreshBookmarks();
   } catch (error) {
-    setBookmarks((currentBookmarks) =>
-      currentBookmarks.filter(
+    setBookmarks((current) =>
+      current.filter(
         (bookmark) =>
           bookmark.article.id
           !== article.id,

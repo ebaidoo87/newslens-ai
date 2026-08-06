@@ -1,10 +1,14 @@
+import {
+  Link,
+} from "react-router-dom";
 
 import ArticleCard from "../../news/components/ArticleCard";
+
+import SavedArticleSkeleton from "../components/SavedArticleSkeleton";
 
 import {
   useBookmarks,
 } from "../../../shared/context/BookmarkContext";
-
 
 export default function SavedArticlesPage() {
   const {
@@ -12,15 +16,31 @@ export default function SavedArticlesPage() {
     isLoading,
   } = useBookmarks();
 
-
   if (isLoading) {
     return (
-      <div className="py-20 text-center text-gray-400">
-        Loading saved articles...
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-4xl font-bold">
+            Saved Articles
+          </h1>
+
+          <p className="mt-2 text-gray-400">
+            Articles you have saved for later.
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {Array.from({
+            length: 6,
+          }).map((_, index) => (
+            <SavedArticleSkeleton
+              key={index}
+            />
+          ))}
+        </div>
       </div>
     );
   }
-
 
   return (
     <div className="space-y-8">
@@ -30,7 +50,9 @@ export default function SavedArticlesPage() {
         </h1>
 
         <p className="mt-2 text-gray-400">
-          Articles you have saved for later.
+          {bookmarks.length === 1
+            ? "1 article saved for later."
+            : `${bookmarks.length} articles saved for later.`}
         </p>
       </div>
 
@@ -45,10 +67,17 @@ export default function SavedArticlesPage() {
           </h2>
 
           <p className="mx-auto mt-3 max-w-md text-gray-400">
-            Browse the news feed and select
-            Save on an article you want to
-            read later.
+            Browse the news feed and save
+            anything you would like to read
+            later.
           </p>
+
+          <Link
+            to="/news"
+            className="mt-6 inline-flex rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-500"
+          >
+            Browse news
+          </Link>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
