@@ -28,3 +28,9 @@ from .reading_history import (
     ReadingHistoryResponse,
     ViewedArticleResponse,
 )
+
+from .user_preference import (
+    UserPreferenceItem,
+    UserPreferencesResponse,
+    UserPreferencesUpdate,
+)

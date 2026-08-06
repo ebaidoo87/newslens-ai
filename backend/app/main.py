@@ -30,6 +30,11 @@ from app.api.reading_history import (
     router as reading_history_router,
 )
 
+from app.api.preferences import (
+    router as preferences_router,
+)
+
+
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
 
@@ -81,6 +86,11 @@ app.include_router(
 
 app.include_router(
     reading_history_router,
+    prefix=settings.api_prefix,
+)
+
+app.include_router(
+    preferences_router,
     prefix=settings.api_prefix,
 )
 
