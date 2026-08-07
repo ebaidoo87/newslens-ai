@@ -34,6 +34,10 @@ import {
   PreferenceProvider,
 } from "./shared/context/PreferenceContext";
 
+import {
+  NotificationProvider,
+} from "./shared/context/NotificationContext";
+
 
 const queryClient = new QueryClient();
 
@@ -47,17 +51,19 @@ ReactDOM.createRoot(
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <ToastProvider>
-            <BookmarkProvider>
-              <ReadingHistoryProvider>
-                <PreferenceProvider>
-                  <SearchProvider>
-                    <CategoryProvider>
-                      <App />
-                    </CategoryProvider>
-                  </SearchProvider>
-                </PreferenceProvider>
-              </ReadingHistoryProvider>
-            </BookmarkProvider>
+            <NotificationProvider>
+              <BookmarkProvider>
+                <ReadingHistoryProvider>
+                  <PreferenceProvider>
+                    <SearchProvider>
+                      <CategoryProvider>
+                        <App />
+                      </CategoryProvider>
+                    </SearchProvider>
+                  </PreferenceProvider>
+                </ReadingHistoryProvider>
+              </BookmarkProvider>
+            </NotificationProvider>
           </ToastProvider>
         </AuthProvider>
       </QueryClientProvider>

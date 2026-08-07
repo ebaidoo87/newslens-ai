@@ -11,6 +11,8 @@ import {
 
 import { useAuth } from "../../context/AuthContext";
 
+import NotificationBell from "../../../features/notifications/components/NotificationBell";
+
 export default function HeaderActions() {
   const navigate = useNavigate();
 
@@ -19,6 +21,7 @@ export default function HeaderActions() {
     isAuthenticated,
     logout,
   } = useAuth();
+  
 
   function handleLogout() {
     logout();
@@ -81,6 +84,11 @@ export default function HeaderActions() {
             {user.email}
           </p>
         </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <NotificationBell />
+
+        {/* Existing profile, login or logout controls */}
       </div>
 
       <button
