@@ -25,6 +25,8 @@ import TrendingPage from "../../features/trending/pages/TrendingPage";
 
 import DiscoverPage from "../../features/discovery/pages/DiscoverPage";
 
+import NotificationsPage from "../../features/notifications/pages/NotificationsPage";
+
 export default function AppRouter() {
   return (
     <MainLayout>
@@ -115,6 +117,15 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <DiscoverPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationsPage />
             </ProtectedRoute>
           }
         />

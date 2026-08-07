@@ -13,12 +13,12 @@ import {
 } from "./AuthContext";
 
 import {
+  deleteNotification as deleteNotificationRequest,
   getNotifications,
   markAllNotificationsRead,
   markNotificationRead,
   type Notification,
 } from "../services/notificationApi";
-
 
 interface NotificationContextType {
   notifications: Notification[];
@@ -35,6 +35,11 @@ interface NotificationContextType {
 
   markAllAsRead:
     () => Promise<void>;
+
+  deleteNotification: (
+    notificationId: number,
+    ) => Promise<void>;
+
 }
 
 
@@ -177,6 +182,33 @@ export function NotificationProvider({
     }
   }
 
+  async function deleteNotification(
+  notificationId: number,
+    ): Promise<void> {
+    const previousNotifications =
+        notifications;
+
+    setNotifications(
+        (currentNotifications) =>
+            currentNotifications.filter(
+                (notification) =>
+                    notification.id !== notificationId,
+        ),
+    );
+
+    try {
+        await deleteNotificationRequest(
+            notificationId,
+    );
+  } catch (error) {
+    setNotifications(
+      previousNotifications,
+    );
+
+    throw error;
+  }
+}
+
 
   useEffect(() => {
     if (isAuthLoading) {
@@ -229,6 +261,7 @@ export function NotificationProvider({
         refreshNotifications,
         markAsRead,
         markAllAsRead,
+        deleteNotification,
       }}
     >
       {children}

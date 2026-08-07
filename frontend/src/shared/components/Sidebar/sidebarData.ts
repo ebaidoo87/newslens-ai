@@ -1,13 +1,14 @@
 import {
+  Bell,
   Bookmark,
   Clock3,
+  Compass,
+  Flame,
   Home,
   Newspaper,
   Search,
   Settings,
   Sparkles,
-  Flame,
-  Compass,
 } from "lucide-react";
 
 
@@ -41,6 +42,11 @@ export const sidebarItems = [
     label: "Search",
     path: "/search",
     icon: Search,
+  },
+  {
+  label: "Notifications",
+  path: "/notifications",
+  icon: Bell,
   },
   {
   label: "Saved Articles",

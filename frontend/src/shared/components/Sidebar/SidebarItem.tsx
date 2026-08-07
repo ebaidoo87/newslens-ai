@@ -7,6 +7,11 @@ import {
   useReadingHistory,
 } from "../../context/ReadingHistoryContext";
 
+import {
+  useNotifications,
+} from "../../context/NotificationContext";
+
+
 type SidebarItemProps = {
   title: string;
   path: string;
@@ -28,13 +33,20 @@ export default function SidebarItem({
   const {
         historyCount,
       } = useReadingHistory();
+  
+  const {
+        unreadCount,
+      } = useNotifications();
 
   const count =
   title === "Saved Articles"
     ? bookmarkCount
     : title === "Recently Viewed"
       ? historyCount
+      : title === "Notifications"
+        ? unreadCount
       : null;
+      
 
   return (
     <NavLink
@@ -52,11 +64,17 @@ export default function SidebarItem({
     <span>{title}</span>
   </div>
 
-  {count !== null && (
-    <span className="rounded-full bg-gray-800 px-2 py-0.5 text-xs font-semibold">
-      {count}
-    </span>
-  )}
+  {count !== null
+&& (
+  title !== "Notifications"
+  || count > 0
+) && (
+  <span className="rounded-full bg-gray-800 px-2 py-0.5 text-xs font-semibold">
+    {count > 99
+      ? "99+"
+      : count}
+  </span>
+)}
     </NavLink>
     
   );
