@@ -82,3 +82,31 @@ export async function deleteNotification(
 
   return response.data;
 }
+
+export interface NotificationDeleteResponse {
+  success: boolean;
+  deleted_count: number;
+  message: string;
+}
+
+
+export async function deleteReadNotifications():
+Promise<NotificationDeleteResponse> {
+  const response =
+    await api.delete<NotificationDeleteResponse>(
+      "/notifications/read",
+    );
+
+  return response.data;
+}
+
+
+export async function deleteAllNotifications():
+Promise<NotificationDeleteResponse> {
+  const response =
+    await api.delete<NotificationDeleteResponse>(
+      "/notifications",
+    );
+
+  return response.data;
+}

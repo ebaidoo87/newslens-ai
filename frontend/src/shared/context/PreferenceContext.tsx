@@ -23,6 +23,7 @@ interface PreferenceContextType {
   selectedCountries: string[];
   selectedKeywords: string[];
   isLoading: boolean;
+  selectedAlerts: string[];
   savePreferences: (
     preferences: UserPreferenceItem[],
   ) => Promise<void>;
@@ -101,6 +102,21 @@ export function PreferenceProvider({
           (item) =>
             item.preference_value,
         ),
+    [preferences],
+  );
+
+  const selectedAlerts = useMemo(
+    () =>
+       preferences
+        .filter(
+          (item) =>
+             item.preference_type
+             === "alert",
+        )     
+        .map(
+          (item) =>
+            item.preference_value,
+      ),
     [preferences],
   );
 
@@ -202,6 +218,7 @@ export function PreferenceProvider({
         selectedCategories,
         selectedCountries,
         selectedKeywords,
+        selectedAlerts,
         isLoading,
         savePreferences,
         clearPreferences,

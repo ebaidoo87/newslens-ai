@@ -7,6 +7,7 @@ import {
   Bell,
   CheckCheck,
   RefreshCw,
+  Trash2,
 } from "lucide-react";
 
 import NotificationItem from "../components/NotificationItem";
@@ -54,6 +55,8 @@ export default function NotificationsPage() {
     markAsRead,
     markAllAsRead,
     deleteNotification,
+    deleteReadNotifications,
+    deleteAllNotifications,
   } = useNotifications();
 
   const {
@@ -83,6 +86,11 @@ export default function NotificationsPage() {
     isRefreshing,
     setIsRefreshing,
   ] = useState(false);
+
+  const [
+  isDeleting,
+  setIsDeleting,
+] = useState(false);
 
 
   const filteredNotifications =
@@ -240,6 +248,81 @@ export default function NotificationsPage() {
     }
   }
 
+  async function handleDeleteRead() {
+  const readCount =
+    notifications.length
+    - unreadCount;
+
+  if (readCount === 0) {
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      "Delete all read notifications?",
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  setIsDeleting(true);
+
+  try {
+    const deletedCount =
+      await deleteReadNotifications();
+
+    showToast(
+      `${deletedCount} read notifications deleted.`,
+      "success",
+    );
+  } catch {
+    showToast(
+      "Unable to delete read notifications.",
+      "error",
+    );
+  } finally {
+    setIsDeleting(false);
+  }
+}
+
+
+async function handleDeleteAll() {
+  if (
+    notifications.length === 0
+  ) {
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      "Delete all notifications? This cannot be undone.",
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  setIsDeleting(true);
+
+  try {
+    const deletedCount =
+      await deleteAllNotifications();
+
+    showToast(
+      `${deletedCount} notifications deleted.`,
+      "success",
+    );
+  } catch {
+    showToast(
+      "Unable to delete notifications.",
+      "error",
+    );
+  } finally {
+    setIsDeleting(false);
+  }
+}
+
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
@@ -297,6 +380,33 @@ export default function NotificationsPage() {
           )}
         </div>
       </div>
+
+      {notifications.length
+        - unreadCount > 0 && (
+        <button
+            type="button"
+            onClick={handleDeleteRead}
+            disabled={isDeleting}
+            className="inline-flex items-center gap-2 rounded-lg border border-red-900 px-4 py-2 text-sm font-medium text-red-300 transition hover:bg-red-950 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+            <Trash2 size={17} />
+
+            Delete read
+          </button>
+        )}
+
+      {notifications.length > 0 && (
+        <button
+            type="button"
+            onClick={handleDeleteAll}
+            disabled={isDeleting}
+            className="inline-flex items-center gap-2 rounded-lg bg-red-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+            <Trash2 size={17} />
+
+            Delete all
+          </button>
+      )}
 
 
       <div className="flex flex-wrap gap-3">

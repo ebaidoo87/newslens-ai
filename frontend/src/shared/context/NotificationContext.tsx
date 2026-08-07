@@ -12,8 +12,11 @@ import {
   useAuth,
 } from "./AuthContext";
 
+
 import {
+  deleteAllNotifications as deleteAllNotificationsRequest,
   deleteNotification as deleteNotificationRequest,
+  deleteReadNotifications as deleteReadNotificationsRequest,
   getNotifications,
   markAllNotificationsRead,
   markNotificationRead,
@@ -39,6 +42,12 @@ interface NotificationContextType {
   deleteNotification: (
     notificationId: number,
     ) => Promise<void>;
+
+  deleteReadNotifications:
+    () => Promise<number>;
+
+  deleteAllNotifications:
+    () => Promise<number>;
 
 }
 
@@ -155,6 +164,55 @@ export function NotificationProvider({
     }
   }
 
+  async function deleteReadNotifications():
+   Promise<number> {
+    const previousNotifications =
+      notifications;
+
+    setNotifications(
+      (currentNotifications) =>
+        currentNotifications.filter(
+          (notification) =>
+            !notification.is_read,
+        ),
+    );
+
+    try {
+        const response =
+          await deleteReadNotificationsRequest();
+
+        return response.deleted_count;
+    } catch (error) {
+        setNotifications(
+      previousNotifications,
+    );
+
+    throw error;
+    }
+  }
+
+
+  async function deleteAllNotifications():
+  Promise<number> {
+    const previousNotifications =
+      notifications;
+
+    setNotifications([]);
+
+    try {
+      const response =
+        await deleteAllNotificationsRequest();
+
+      return response.deleted_count;
+    } catch (error) {
+      setNotifications(
+        previousNotifications,
+      );
+
+      throw error;
+    }
+  }
+
 
   async function markAllAsRead():
   Promise<void> {
@@ -262,6 +320,8 @@ export function NotificationProvider({
         markAsRead,
         markAllAsRead,
         deleteNotification,
+        deleteReadNotifications,
+        deleteAllNotifications,
       }}
     >
       {children}

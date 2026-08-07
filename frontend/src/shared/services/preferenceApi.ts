@@ -4,7 +4,8 @@ import { api } from "./api";
 export type PreferenceType =
   | "category"
   | "country"
-  | "keyword";
+  | "keyword"
+  | "alert";
 
 
 export interface UserPreferenceItem {
