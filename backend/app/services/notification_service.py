@@ -45,6 +45,7 @@ class NotificationService:
                 "category": set(),
                 "country": set(),
                 "keyword": set(),
+                "alert": set(),
             }
         )
 
@@ -63,6 +64,7 @@ class NotificationService:
                     "category",
                     "country",
                     "keyword",
+                    "alert",
                 }
             ):
                 continue
@@ -88,6 +90,16 @@ class NotificationService:
     ) -> list[str]:
         reasons: list[str] = []
 
+        alert_settings = preferences[
+            "alert"
+        ]
+
+        if (
+            "notifications_enabled"
+            not in alert_settings
+        ):
+            return reasons
+
         article_category = self.normalize(
             article.category
         )
@@ -96,28 +108,24 @@ class NotificationService:
             article.country
         )
 
-        title = self.normalize(
-            article.title
-        )
-
-        summary = self.normalize(
-            article.summary
-        )
-
-        content = self.normalize(
-            article.content
-        )
-
         searchable_text = " ".join(
             [
-                title,
-                summary,
-                content,
+                self.normalize(
+                    article.title
+                ),
+                self.normalize(
+                    article.summary
+                ),
+                self.normalize(
+                    article.content
+                ),
             ]
         )
 
         if (
-            article_category
+            "category_alerts"
+            in alert_settings
+            and article_category
             in preferences["category"]
         ):
             reasons.append(
@@ -125,20 +133,26 @@ class NotificationService:
             )
 
         if (
-            article_country
+            "country_alerts"
+            in alert_settings
+            and article_country
             in preferences["country"]
         ):
             reasons.append(
                 f"Country: {article.country}"
             )
 
-        for keyword in sorted(
-            preferences["keyword"]
-        ):
-            if keyword in searchable_text:
-                reasons.append(
-                    f"Topic: {keyword}"
-                )
+        if (
+            "keyword_alerts"
+            in alert_settings
+         ):
+            for keyword in sorted(
+                preferences["keyword"]
+            ):
+                if keyword in searchable_text:
+                    reasons.append(
+                        f"Topic: {keyword}"
+                    )
 
         return reasons
 
@@ -286,3 +300,26 @@ class NotificationService:
             self.db,
             notification,
         )
+
+    def delete_all_notifications(
+        self,
+        user_id: int,
+    ) -> int:
+        return (
+        self.repository.delete_all_by_user(
+            self.db,
+            user_id,
+        )
+    )
+
+
+    def delete_read_notifications(
+        self,
+        user_id: int,
+    ) -> int:
+        return (
+        self.repository.delete_read_by_user(
+            self.db,
+            user_id,
+        )
+    )

@@ -164,3 +164,43 @@ class NotificationRepository:
         db.delete(notification)
 
         db.commit()
+
+    def delete_all_by_user(
+        self,
+        db: Session,
+        user_id: int,
+    ) -> int:
+        deleted_count = (
+        db.query(Notification)
+        .filter(
+            Notification.user_id == user_id,
+        )
+        .delete(
+            synchronize_session=False,
+        )
+    )
+
+        db.commit()
+
+        return deleted_count
+
+
+    def delete_read_by_user(
+        self,
+        db: Session,
+        user_id: int,
+    ) -> int:
+        deleted_count = (
+        db.query(Notification)
+        .filter(
+            Notification.user_id == user_id,
+            Notification.is_read.is_(True),
+        )
+        .delete(
+            synchronize_session=False,
+        )
+    )
+
+        db.commit()
+
+        return deleted_count

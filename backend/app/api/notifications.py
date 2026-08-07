@@ -13,6 +13,14 @@ from app.schemas.notification import (
     NotificationCountResponse,
     NotificationResponse,
 )
+
+from app.schemas.notification import (
+    NotificationActionResponse,
+    NotificationCountResponse,
+    NotificationDeleteResponse,
+    NotificationResponse,
+)
+
 from app.services.notification_service import (
     NotificationService,
 )
@@ -95,6 +103,61 @@ def mark_all_read(
         "success": True,
         "message": (
             "All notifications marked as read"
+        ),
+    }
+
+@router.delete(
+    "/read",
+    response_model=NotificationDeleteResponse,
+)
+def delete_read_notifications(
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db),
+):
+    service = NotificationService(db)
+
+    deleted_count = (
+        service.delete_read_notifications(
+            current_user.id
+        )
+    )
+
+    return {
+        "success": True,
+        "deleted_count": deleted_count,
+        "message": (
+            f"Deleted {deleted_count} "
+            "read notifications"
+        ),
+    }
+
+
+@router.delete(
+    "",
+    response_model=NotificationDeleteResponse,
+)
+def delete_all_notifications(
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db),
+):
+    service = NotificationService(db)
+
+    deleted_count = (
+        service.delete_all_notifications(
+            current_user.id
+        )
+    )
+
+    return {
+        "success": True,
+        "deleted_count": deleted_count,
+        "message": (
+            f"Deleted {deleted_count} "
+            "notifications"
         ),
     }
 

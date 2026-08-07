@@ -26,3 +26,8 @@ class NotificationCountResponse(BaseModel):
 class NotificationActionResponse(BaseModel):
     success: bool
     message: str
+
+class NotificationDeleteResponse(BaseModel):
+    success: bool
+    deleted_count: int
+    message: str
