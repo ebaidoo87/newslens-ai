@@ -46,3 +46,9 @@ from .trending import (
 from .discovery import (
     DiscoveredArticleResponse,
 )
+
+from .notification import (
+    NotificationActionResponse,
+    NotificationCountResponse,
+    NotificationResponse,
+)

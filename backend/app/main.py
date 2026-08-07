@@ -46,6 +46,10 @@ from app.api.discovery import (
     router as discovery_router,
 )
 
+from app.api.notifications import (
+    router as notification_router,
+)
+
 
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
@@ -121,6 +125,11 @@ app.include_router(
     prefix=settings.api_prefix,
 )
 
+app.include_router(
+    notification_router,
+    prefix=settings.api_prefix,
+)
+
 
 logger.info("Starting NewsLens AI")
 
@@ -152,6 +161,7 @@ def db_check():
         return {
             "database": "connected"
         }
+    
     
 
     finally:

@@ -15,6 +15,9 @@ from app.repositories.article_repository import (
 from app.services.news_provider import (
     NewsProvider,
 )
+from app.services.notification_service import (
+    NotificationService,
+)
 
 from langdetect import (
     DetectorFactory,
@@ -24,12 +27,17 @@ from langdetect import (
 
 DetectorFactory.seed = 0
 
+
 class ImportService:
 
     def __init__(self, db: Session):
         self.db = db
         self.provider = NewsProvider()
         self.repository = ArticleRepository()
+
+        self.notification_service = (
+        NotificationService(db)
+        )
 
 
     @staticmethod
@@ -68,14 +76,19 @@ class ImportService:
 
         imported = 0
         skipped = 0
+        language_skipped = 0
+        notifications_created = 0
 
         country_counts: dict[str, int] = {}
+
 
         for item in articles:
             url = item.get("url")
             title = item.get("title")
             summary = item.get("description")
             content = item.get("content")
+
+            
 
             if not url or not title:
                 skipped += 1
@@ -86,6 +99,7 @@ class ImportService:
                 summary=summary,
                 content=content,
             ):
+                language_skipped += 1
                 skipped += 1
                 continue
 
@@ -120,34 +134,46 @@ class ImportService:
                 summary=summary,
                 content=content,
                 url=url,
-                image_url=item.get("urlToImage"),
+                image_url=item.get(
+                    "urlToImage"
+                ),
                 source=source_name,
-                author=item.get("author"),
+                author=item.get(
+                    "author"
+                ),
                 language="en",
-                country=source_metadata.country,
+                country=(
+                    source_metadata.country
+                ),
                 category=category,
-                published_at=self.parse_published_at(
-                    item.get("publishedAt")
+                published_at=(
+                    self.parse_published_at(
+                        item.get(
+                            "publishedAt"
+                        )
+                    )
                 ),
             )
 
-            self.repository.create(
-                self.db,
-                article,
+            created_article = (
+                self.repository.create(
+                    self.db,
+                    article,
+                )
+            )
+
+            notification_count = (
+                self.notification_service
+                    .create_article_notifications(
+                        created_article
+                )
+            )
+
+            notifications_created += (
+                notification_count
             )
 
             imported += 1
-
-            language_skipped = 0
-
-            if not self.is_english_article(
-                title=title,
-                summary=summary,
-                content=content,
-            ):
-                language_skipped += 1
-                skipped += 1
-                continue
 
             country_counts[
                 source_metadata.country
@@ -165,8 +191,12 @@ class ImportService:
             "imported": imported,
             "skipped": skipped,
             "language_skipped": language_skipped,
+            "notifications_created": (
+                notifications_created
+            ),
             "countries": country_counts,
         }
+
 
     @staticmethod
     def is_english_article(

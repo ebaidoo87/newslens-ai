@@ -69,4 +69,11 @@ class Article(Base):
     back_populates="article",
     cascade="all, delete-orphan",
     passive_deletes=True,
-)
+    )
+
+    notifications = relationship(
+    "Notification",
+    back_populates="article",
+    cascade="all, delete-orphan",
+    passive_deletes=True,
+    )
