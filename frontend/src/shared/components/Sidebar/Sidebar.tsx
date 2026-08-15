@@ -1,7 +1,13 @@
 import { sidebarItems } from "./sidebarData";
 import SidebarItem from "./SidebarItem";
+import {
+  Activity,
+} from "lucide-react";
 
-
+  label: "Email Delivery"
+  path: "/email-monitoring"
+  icon: Activity
+  
 export default function Sidebar() {
   return (
     <aside className="h-full w-64 border-r border-gray-800 bg-gray-900">

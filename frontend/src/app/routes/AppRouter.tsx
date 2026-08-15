@@ -27,6 +27,8 @@ import DiscoverPage from "../../features/discovery/pages/DiscoverPage";
 
 import NotificationsPage from "../../features/notifications/pages/NotificationsPage";
 
+import EmailMonitoringPage from "../../features/email-monitoring/pages/EmailMonitoringPage";
+
 export default function AppRouter() {
   return (
     <MainLayout>
@@ -126,6 +128,15 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/email-monitoring"
+          element={
+            <ProtectedRoute>
+              <EmailMonitoringPage />
             </ProtectedRoute>
           }
         />

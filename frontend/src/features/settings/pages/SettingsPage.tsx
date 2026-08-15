@@ -27,6 +27,8 @@ import KeywordPreferences from "../components/KeywordPreferences";
 
 import AlertPreferences from "../components/AlertPreferences";
 
+import EmailAlertPreferences from "../components/EmailAlertPreferences";
+
 
 export default function SettingsPage() {
   const {
@@ -273,6 +275,8 @@ export default function SettingsPage() {
       <KeywordPreferences />
 
       <AlertPreferences />
+
+      <EmailAlertPreferences />
 
 
       <div className="rounded-2xl border border-gray-800 bg-gray-900 p-8">

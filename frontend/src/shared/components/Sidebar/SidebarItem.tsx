@@ -25,10 +25,6 @@ export default function SidebarItem({
 }: SidebarItemProps) {
   const { bookmarkCount } = useBookmarks();
 
-  const displayTitle =
-    title === "Saved Articles"
-      ? `${title} (${bookmarkCount})`
-      : title;
 
   const {
         historyCount,

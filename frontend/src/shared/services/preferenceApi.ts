@@ -5,7 +5,8 @@ export type PreferenceType =
   | "category"
   | "country"
   | "keyword"
-  | "alert";
+  | "alert"
+  | "email_alert";
 
 
 export interface UserPreferenceItem {
