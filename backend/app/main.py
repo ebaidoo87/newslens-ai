@@ -62,6 +62,9 @@ from app.api.email_monitoring import (
     router as email_monitoring_router,
 )
 
+from app.api.admin import (
+    router as admin_router,
+)
 
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
@@ -149,6 +152,11 @@ app.include_router(
 
 app.include_router(
     email_monitoring_router,
+    prefix=settings.api_prefix,
+)
+
+app.include_router(
+    admin_router,
     prefix=settings.api_prefix,
 )
 
