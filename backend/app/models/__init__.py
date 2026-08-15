@@ -4,7 +4,15 @@ from app.models.notification import Notification
 from app.models.reading_history import ReadingHistory
 from app.models.user import User
 from app.models.user_preference import UserPreference
+from app.models.email_queue import EmailQueue
 
+from app.models.digest_notification import (
+    DigestNotification,
+)
+
+from app.models.email_suppression import (
+    EmailSuppression,
+)
 
 __all__ = [
     "Article",
@@ -13,4 +21,7 @@ __all__ = [
     "ReadingHistory",
     "User",
     "UserPreference",
+    "EmailQueue",
+    "DigestNotification",
+    "EmailSuppression",
 ]

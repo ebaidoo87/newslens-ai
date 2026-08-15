@@ -59,3 +59,7 @@ from .notification import (
     NotificationDeleteResponse,
     NotificationResponse,
 )
+from .email_monitoring import (
+    EmailStatsResponse,
+    RecentEmailResponse,
+)

@@ -9,13 +9,22 @@ from app.repositories.notification_repository import (
     NotificationRepository,
 )
 
+from app.services.email_queue_service import (
+    EmailQueueService,
+)
+
+from app.models.user import User
+
 from fastapi import HTTPException
+
 
 class NotificationService:
 
     def __init__(self, db: Session):
         self.db = db
         self.repository = NotificationRepository()
+
+        self.email_queue_service = (EmailQueueService(db))
 
     @staticmethod
     def normalize(
@@ -219,6 +228,30 @@ class NotificationService:
             self.db,
             notifications,
         )
+
+        for created_notification in (
+            created_notifications
+):
+            user = (
+                self.db.query(User)
+                .filter(
+                    User.id
+                    == created_notification.user_id
+                )
+                .first()
+            )
+
+            if not user:
+                continue
+
+            self.email_queue_service\
+                .queue_notification_email(
+                    notification=(
+                        created_notification
+                    ),
+                    user=user,
+                )
+
 
         return len(notifications)
 

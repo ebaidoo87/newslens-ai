@@ -17,10 +17,13 @@ class UserLogin(BaseModel):
 
 class UserResponse(BaseModel):
     id: int
-    email: EmailStr
+    email: str
     username: str
+    role: str
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+    )
 
 
 class UserUpdate(BaseModel):
@@ -33,7 +36,7 @@ class UserUpdate(BaseModel):
     email: EmailStr | None = None
 
     current_password: str
-    
+
 
 class PasswordChange(BaseModel):
     current_password: str

@@ -13,12 +13,21 @@ from app.services.import_service import (
     ImportService,
 )
 
+from app.jobs.email_worker import (
+    process_email_queue,
+)
+
+from app.jobs.digest_jobs import (
+    queue_daily_digests,
+    queue_weekly_digests,
+)
 
 scheduler = AsyncIOScheduler()
 
 CATEGORIES = list(
     CATEGORY_QUERIES.keys()
 )
+
 
 
 async def import_job():
@@ -72,6 +81,32 @@ def start_scheduler():
         coalesce=True,
     )
 
+    scheduler.add_job(
+        process_email_queue,
+        trigger="interval",
+        minutes=1,
+        id="email_worker",
+        replace_existing=True,
+    )
+
+    scheduler.add_job(
+    queue_daily_digests,
+    trigger="cron",
+    hour=8,
+    minute=0,
+    id="daily_digest",
+    replace_existing=True,
+    )
+
+    scheduler.add_job(
+    queue_weekly_digests,
+    trigger="cron",
+    day_of_week="mon",
+    hour=8,
+    minute=0,
+    id="weekly_digest",
+    replace_existing=True,
+    )
     scheduler.start()
 
     print("🚀 News scheduler started.")

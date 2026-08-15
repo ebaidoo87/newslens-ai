@@ -16,6 +16,7 @@ ALLOWED_PREFERENCE_TYPES = {
     "country",
     "keyword",
     "alert",
+    "email_alert",
 }
 
 
