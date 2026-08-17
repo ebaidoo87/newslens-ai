@@ -9,6 +9,7 @@ import {
   Search,
   Settings,
   Sparkles,
+  Users,
 } from "lucide-react";
 
 import {
@@ -83,6 +84,12 @@ export const sidebarItems = [
     label: "Email Delivery",
     path: "/email-monitoring",
     icon: Activity,
+    adminOnly: true,
+  },
+  {
+    label: "Users",
+    path: "/admin/users",
+    icon: Users,
     adminOnly: true,
   },
 ];

@@ -33,6 +33,7 @@ import AdminRoute from "./AdminRoute";
 
 import AdminDashboardPage from "../../features/admin/pages/AdminDashboardPage";
 
+import AdminUsersPage from "../../features/admin/pages/AdminUsersPage";
 
 export default function AppRouter() {
   return (
@@ -151,6 +152,15 @@ export default function AppRouter() {
           element={
             <AdminRoute>
               <AdminDashboardPage />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <AdminUsersPage />
             </AdminRoute>
           }
         />

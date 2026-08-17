@@ -52,7 +52,7 @@ export async function getEmailStats():
 Promise<EmailStats> {
   const response =
     await api.get<EmailStats>(
-      "/email-monitoring/stats",
+      "/admin/email/stats",
     );
 
   return response.data;
@@ -64,7 +64,7 @@ export async function getRecentEmails(
 ): Promise<RecentEmail[]> {
   const response =
     await api.get<RecentEmail[]>(
-      "/email-monitoring/recent",
+      "/admin/email/recent",
       {
         params: {
           limit,
