@@ -29,6 +29,11 @@ import NotificationsPage from "../../features/notifications/pages/NotificationsP
 
 import EmailMonitoringPage from "../../features/email-monitoring/pages/EmailMonitoringPage";
 
+import AdminRoute from "./AdminRoute";
+
+import AdminDashboardPage from "../../features/admin/pages/AdminDashboardPage";
+
+
 export default function AppRouter() {
   return (
     <MainLayout>
@@ -135,9 +140,18 @@ export default function AppRouter() {
         <Route
           path="/email-monitoring"
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <EmailMonitoringPage />
-            </ProtectedRoute>
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboardPage />
+            </AdminRoute>
           }
         />
     

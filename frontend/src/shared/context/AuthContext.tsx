@@ -22,6 +22,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isAdmin: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
 
@@ -44,6 +45,9 @@ export function AuthProvider({
   const [user, setUser] = useState<AuthUser | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
+
+  const isAdmin =
+  user?.role === "admin";
 
   async function refreshUser(): Promise<void> {
     const currentUser =
@@ -110,6 +114,7 @@ export function AuthProvider({
         user,
         token,
         isAuthenticated: Boolean(user && token),
+        isAdmin,
         isLoading,
         login,
         logout,

@@ -20,6 +20,7 @@ export interface AuthUser {
   id: number;
   email: string;
   username: string;
+  role: "user" | "admin";
 }
 
 export interface UpdateProfilePayload {

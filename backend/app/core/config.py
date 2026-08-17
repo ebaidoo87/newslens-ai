@@ -24,10 +24,10 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=False,
-        )
+    )
 
-    RESEND_API_KEY=""
-    EMAIL_FROM="NewsLens AI <news@newslensai.com>"
+    RESEND_API_KEY: str = ""
+    EMAIL_FROM: str = ""
 
     RESEND_WEBHOOK_SECRET: str = ""
 
@@ -38,4 +38,3 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
-

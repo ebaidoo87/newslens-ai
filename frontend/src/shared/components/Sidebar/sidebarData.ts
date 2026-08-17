@@ -11,6 +11,16 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import {
+  Activity,
+  ShieldCheck,
+} from "lucide-react";
+
+export type SidebarItemData = {
+  label: string;
+  path: string;
+  adminOnly?: boolean;
+};
 
 export const sidebarItems = [
   {
@@ -62,5 +72,17 @@ export const sidebarItems = [
     label: "Settings",
     path: "/settings",
     icon: Settings,
+  },
+  {
+  label: "Admin",
+  path: "/admin",
+  icon: ShieldCheck,
+  adminOnly: true,
+  },
+  {
+    label: "Email Delivery",
+    path: "/email-monitoring",
+    icon: Activity,
+    adminOnly: true,
   },
 ];
