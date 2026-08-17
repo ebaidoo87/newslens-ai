@@ -17,6 +17,13 @@ from app.services.email_monitoring_service import (
     EmailMonitoringService,
 )
 
+from app.schemas.admin import (
+    AdminUserResponse,
+)
+
+from app.services.admin_user_service import (
+    AdminUserService,
+)
 
 router = APIRouter(
     prefix="/admin",
@@ -161,3 +168,19 @@ def get_user_stats(
         "admins": admin_users,
         "users": normal_users,
     }
+
+@router.get(
+    "/users",
+    response_model=list[
+        AdminUserResponse
+    ],
+)
+def get_users(
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    service = AdminUserService(
+        db,
+    )
+
+    return service.get_users()
