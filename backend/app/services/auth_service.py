@@ -71,6 +71,11 @@ class AuthService:
             credentials.email,
         )
 
+        if not user.is_active:
+            raise ValueError(
+                "This account has been disabled."
+            )
+
         if not user:
             raise ValueError("Invalid email or password")
 

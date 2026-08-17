@@ -25,6 +25,17 @@ from app.services.admin_user_service import (
     AdminUserService,
 )
 
+from app.schemas.admin import (
+    AdminUserResponse,
+    AdminUserRoleUpdate,
+)
+
+from app.schemas.admin import (
+    AdminUserResponse,
+    AdminUserRoleUpdate,
+    AdminUserStatusUpdate,
+)
+
 router = APIRouter(
     prefix="/admin",
     tags=["Admin"],
@@ -184,3 +195,49 @@ def get_users(
     )
 
     return service.get_users()
+
+@router.patch(
+    "/users/{user_id}/role",
+    response_model=AdminUserResponse,
+)
+def update_user_role(
+    user_id: int,
+    payload: AdminUserRoleUpdate,
+    current_admin: User = Depends(
+        require_admin
+    ),
+    db: Session = Depends(get_db),
+):
+    service = AdminUserService(
+        db
+    )
+
+    return service.update_role(
+        user_id=user_id,
+        new_role=payload.role,
+        current_admin_id=(
+            current_admin.id
+        ),
+    )
+
+@router.patch(
+    "/users/{user_id}/status",
+    response_model=AdminUserResponse,
+)
+def update_user_status(
+    user_id: int,
+    payload: AdminUserStatusUpdate,
+    current_admin: User = Depends(
+        require_admin,
+    ),
+    db: Session = Depends(get_db),
+):
+    service = AdminUserService(
+        db,
+    )
+
+    return service.update_active_status(
+        user_id=user_id,
+        active=payload.is_active,
+        current_admin_id=current_admin.id,
+    )

@@ -23,6 +23,8 @@ from sqlalchemy.orm import (
     relationship,
 )
 
+from sqlalchemy import Boolean
+
 class User(Base):
     __tablename__ = "users"
 
@@ -56,6 +58,14 @@ class User(Base):
     nullable=False,
     default="user",
     server_default="user",
+    index=True,
+    )
+
+    is_active: Mapped[bool] = mapped_column(
+    Boolean,
+    nullable=False,
+    default=True,
+    server_default="true",
     index=True,
     )
 
@@ -105,4 +115,5 @@ class User(Base):
     back_populates="user",
     cascade="all, delete-orphan",
     passive_deletes=True,
-)
+    )
+    

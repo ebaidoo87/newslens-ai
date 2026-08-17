@@ -24,3 +24,11 @@ class AdminUserResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
     )
+
+    is_active: bool
+
+class AdminUserRoleUpdate(BaseModel):
+    role: str
+
+class AdminUserStatusUpdate(BaseModel):
+    is_active: bool
