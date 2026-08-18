@@ -21,6 +21,19 @@ from app.services.audit_service import (
     AuditService,
 )
 
+from datetime import datetime
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    Query,
+)
+
+from app.schemas.audit_log import (
+    AuditLogListResponse,
+    AuditLogResponse,
+)
+
 router = APIRouter(
     prefix="/admin/audit",
     tags=["Admin Audit"],
@@ -47,23 +60,48 @@ def recent_logs(
 
 @router.get(
     "",
-    response_model=list[
-        AuditLogResponse
-    ],
+    response_model=(
+        AuditLogListResponse
+    ),
 )
 def all_logs(
-    skip: int = 0,
-    limit: int = 50,
+    skip: int = Query(
+        default=0,
+        ge=0,
+    ),
+    limit: int = Query(
+        default=25,
+        ge=1,
+        le=100,
+    ),
+    action: str | None = None,
+    admin_user_id: int | None = None,
+    target_user_id: int | None = None,
+    date_from: datetime | None = None,
+    date_to: datetime | None = None,
+    search: str | None = None,
     current_admin: User = Depends(
         require_admin
     ),
     db: Session = Depends(get_db),
 ):
-    service = AuditService(db)
+    service = AuditService(
+        db
+    )
 
     return service.paginated(
-        skip,
-        limit,
+        skip=skip,
+        limit=limit,
+        action=action,
+        admin_user_id=(
+            admin_user_id
+        ),
+        target_user_id=(
+            target_user_id
+        ),
+        date_from=date_from,
+        date_to=date_to,
+        search=search,
     )
 
 @router.get(

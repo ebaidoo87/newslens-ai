@@ -7,6 +7,8 @@ from app.repositories.audit_repository import (
     AuditRepository,
 )
 
+from datetime import datetime
+
 
 class AuditService:
 
@@ -81,11 +83,52 @@ class AuditService:
         self,
         skip: int = 0,
         limit: int = 50,
+        action: str | None = None,
+        admin_user_id: int | None = None,
+        target_user_id: int | None = None,
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+        search: str | None = None,
     ):
-        return (
-            self.repository.get_paginated(
+        items = (
+            self.repository
+            .get_paginated(
                 self.db,
-                skip,
-                limit,
+                skip=skip,
+                limit=limit,
+                action=action,
+                admin_user_id=(
+                    admin_user_id
+                ),
+                target_user_id=(
+                    target_user_id
+                ),
+                date_from=date_from,
+                date_to=date_to,
+                search=search,
             )
         )
+
+        total = (
+            self.repository
+            .count_filtered(
+                self.db,
+                action=action,
+                admin_user_id=(
+                    admin_user_id
+                ),
+                target_user_id=(
+                    target_user_id
+                ),
+                date_from=date_from,
+                date_to=date_to,
+                search=search,
+            )
+        )
+
+        return {
+            "items": items,
+            "total": total,
+            "skip": skip,
+            "limit": limit,
+        }
