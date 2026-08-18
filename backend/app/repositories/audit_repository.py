@@ -45,3 +45,28 @@ class AuditRepository:
             )
             .all()
         )
+
+    def count(
+        self,
+        db: Session,
+    ) -> int:
+        return (
+            db.query(AuditLog)
+            .count()
+        )
+
+    def get_paginated(
+        self,
+        db: Session,
+        skip: int,
+        limit: int,
+    ):
+        return (
+            db.query(AuditLog)
+            .order_by(
+                AuditLog.created_at.desc()
+            )
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )

@@ -67,3 +67,25 @@ class AuditService:
                 self.db,
             )
         )
+
+    def total_logs(
+        self,
+    ) -> int:
+        return (
+            self.repository.count(
+                self.db,
+            )
+        )
+
+    def paginated(
+        self,
+        skip: int = 0,
+        limit: int = 50,
+    ):
+        return (
+            self.repository.get_paginated(
+                self.db,
+                skip,
+                limit,
+            )
+        )
