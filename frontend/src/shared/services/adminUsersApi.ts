@@ -62,3 +62,39 @@ export async function updateUserStatus(
 
   return response.data;
 }
+
+export interface AdminPasswordResetPayload {
+  new_password: string;
+  confirm_new_password: string;
+}
+
+
+export interface AdminActionResponse {
+  success: boolean;
+  message: string;
+}
+
+
+export async function resetUserPassword(
+  userId: number,
+  payload: AdminPasswordResetPayload,
+): Promise<AdminActionResponse> {
+  const response =
+    await api.patch<AdminActionResponse>(
+      `/admin/users/${userId}/password`,
+      payload,
+    );
+
+  return response.data;
+}
+
+export async function deleteUser(
+  userId: number,
+): Promise<AdminActionResponse> {
+  const response =
+    await api.delete<AdminActionResponse>(
+      `/admin/users/${userId}`,
+    );
+
+  return response.data;
+}

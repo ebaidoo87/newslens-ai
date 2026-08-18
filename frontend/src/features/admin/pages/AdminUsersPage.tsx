@@ -1,9 +1,16 @@
+
+import ResetPasswordModal from "../components/ResetPasswordModal";
+
 import {
+  KeyRound,
   Search,
   Shield,
+  Trash2,
   UserRound,
   Users,
 } from "lucide-react";
+
+import DeleteUserModal from "../components/DeleteUserModal";
 
 import {
   useMemo,
@@ -32,6 +39,7 @@ import type {
 type RoleFilter =
   | "all"
   | UserRole;
+
 
 
 export default function AdminUsersPage() {
@@ -106,6 +114,23 @@ export default function AdminUsersPage() {
       search,
       roleFilter,
     ]);
+
+    const [
+        passwordResetUser,
+        setPasswordResetUser,
+        ] = useState<{
+        id: number;
+        username: string;
+        } | null>(null);
+
+    const [
+        deleteTarget,
+        setDeleteTarget,
+        ] = useState<{
+        id: number;
+        username: string;
+        email: string;
+        } | null>(null);
 
 
   async function handleRoleChange(
@@ -518,6 +543,75 @@ export default function AdminUsersPage() {
                                   ? "Suspend"
                                   : "Activate"}
                             </button>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setPasswordResetUser({
+                                    id: user.id,
+                                    username: user.username,
+                                    })
+                                }
+                                className="inline-flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-sm font-medium text-gray-300 transition hover:bg-gray-800"
+                                >
+                                <KeyRound size={15} />
+
+                                Reset Password
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setDeleteTarget({
+                                    id: user.id,
+                                    username:
+                                        user.username,
+                                    email:
+                                        user.email,
+                                    })
+                                }
+                                className="inline-flex items-center gap-2 rounded-lg border border-red-900 px-3 py-2 text-sm font-medium text-white-300 transition hover:bg-red-950"
+                                >
+                                <Trash2 size={15} />
+
+                                Delete
+                            </button>
+
+                            {passwordResetUser && (
+                                <ResetPasswordModal
+                                userId={
+                                passwordResetUser.id
+                                }
+                                username={
+                                passwordResetUser.username
+                                }
+                                onClose={() =>
+                                setPasswordResetUser(
+                                    null
+                                )
+                                }
+                            />
+                            )}
+
+                            {deleteTarget && (
+                                <DeleteUserModal
+                                userId={
+                                deleteTarget.id
+                                }
+                                username={
+                                deleteTarget.username
+                                }
+                                email={
+                                deleteTarget.email
+                                }
+                                onClose={() =>
+                                setDeleteTarget(
+                                    null
+                                )
+                                }
+                            />
+                            )}
+                            
 
                           </div>
                         )}
