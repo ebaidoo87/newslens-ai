@@ -5,7 +5,6 @@ import {
 } from "lucide-react";
 
 import {
-  useMemo,
   useState,
 } from "react";
 
@@ -22,6 +21,31 @@ export default function AdminAuditPage() {
   ] = useState("");
 
   const [
+    actionFilter,
+    setActionFilter,
+  ] = useState("");
+
+  const [
+    adminId,
+    setAdminId,
+  ] = useState("");
+
+  const [
+    targetId,
+    setTargetId,
+  ] = useState("");
+
+  const [
+    dateFrom,
+    setDateFrom,
+  ] = useState("");
+
+  const [
+    dateTo,
+    setDateTo,
+  ] = useState("");
+
+  const [
     page,
     setPage,
   ] = useState(0);
@@ -33,14 +57,43 @@ export default function AdminAuditPage() {
 
 
   const {
-    data: logs = [],
+    data,
     isLoading,
     isFetching,
     refetch,
-  } = useAuditLogs(
+  } = useAuditLogs({
     skip,
     limit,
-  );
+
+    search:
+      search.trim()
+        || undefined,
+
+    action:
+      actionFilter
+        || undefined,
+
+    admin_user_id:
+      adminId
+        ? Number(adminId)
+        : undefined,
+
+    target_user_id:
+      targetId
+        ? Number(targetId)
+        : undefined,
+
+    date_from:
+      dateFrom
+        ? `${dateFrom}T00:00:00`
+        : undefined,
+
+    date_to:
+      dateTo
+        ? `${dateTo}T23:59:59`
+        : undefined,
+  });
+
 
   const {
     data: stats,
@@ -48,66 +101,30 @@ export default function AdminAuditPage() {
   } = useAuditStats();
 
 
-  const filteredLogs =
-    useMemo(() => {
-      const normalized =
-        search
-          .trim()
-          .toLowerCase();
+  const logs =
+    data?.items ?? [];
 
-      if (!normalized) {
-        return logs;
-      }
+  const total =
+    data?.total ?? 0;
 
-      return logs.filter(
-        (log) => {
-          const action =
-            log.action
-              .toLowerCase();
-
-          const details =
-            (
-              log.details
-              ?? ""
-            ).toLowerCase();
-
-          const adminId =
-            String(
-              log.admin_user_id
-              ?? "",
-            );
-
-          const targetId =
-            String(
-              log.target_user_id
-              ?? "",
-            );
-
-          return (
-            action.includes(
-              normalized
-            )
-            || details.includes(
-              normalized
-            )
-            || adminId.includes(
-              normalized
-            )
-            || targetId.includes(
-              normalized
-            )
-          );
-        },
-      );
-    }, [
-      logs,
-      search,
-    ]);
+  const hasNextPage =
+    skip + limit < total;
 
 
   function handleRefresh() {
     void refetch();
     void refetchStats();
+  }
+
+
+  function handleClearFilters() {
+    setSearch("");
+    setActionFilter("");
+    setAdminId("");
+    setTargetId("");
+    setDateFrom("");
+    setDateTo("");
+    setPage(0);
   }
 
 
@@ -132,6 +149,7 @@ export default function AdminAuditPage() {
   return (
     <div className="space-y-8">
 
+      {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
 
         <div>
@@ -175,6 +193,7 @@ export default function AdminAuditPage() {
       </div>
 
 
+      {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2">
 
         <div className="rounded-2xl border border-gray-800 bg-gray-900 p-5">
@@ -201,23 +220,141 @@ export default function AdminAuditPage() {
       </div>
 
 
-      <div className="rounded-2xl border border-gray-800 bg-gray-900 p-4">
+      {/* Filters */}
+      <div className="space-y-3">
 
-        <input
-          type="text"
-          value={search}
-          onChange={(event) =>
-            setSearch(
-              event.target.value
-            )
-          }
-          placeholder="Search action, details, admin ID or target ID..."
-          className="w-full rounded-xl border border-gray-700 bg-gray-950 px-4 py-3 text-white outline-none transition focus:border-blue-500"
-        />
+        <div className="grid gap-3 rounded-2xl border border-gray-800 bg-gray-900 p-4 md:grid-cols-2 xl:grid-cols-3">
+
+          <input
+            type="text"
+            value={search}
+            onChange={(event) => {
+              setSearch(
+                event.target.value
+              );
+
+              setPage(0);
+            }}
+            placeholder="Search audit logs..."
+            className="rounded-xl border border-gray-700 bg-gray-950 px-4 py-3 text-white outline-none focus:border-blue-500"
+          />
+
+
+          <select
+            value={actionFilter}
+            onChange={(event) => {
+              setActionFilter(
+                event.target.value
+              );
+
+              setPage(0);
+            }}
+            className="rounded-xl border border-gray-700 bg-gray-950 px-4 py-3 text-white outline-none focus:border-blue-500"
+          >
+            <option value="">
+              All actions
+            </option>
+
+            <option value="promote_user">
+              Promote User
+            </option>
+
+            <option value="demote_user">
+              Demote User
+            </option>
+
+            <option value="suspend_user">
+              Suspend User
+            </option>
+
+            <option value="activate_user">
+              Activate User
+            </option>
+
+            <option value="reset_password">
+              Reset Password
+            </option>
+
+            <option value="delete_user">
+              Delete User
+            </option>
+          </select>
+
+
+          <input
+            type="number"
+            min="1"
+            value={adminId}
+            onChange={(event) => {
+              setAdminId(
+                event.target.value
+              );
+
+              setPage(0);
+            }}
+            placeholder="Admin ID"
+            className="rounded-xl border border-gray-700 bg-gray-950 px-4 py-3 text-white outline-none focus:border-blue-500"
+          />
+
+
+          <input
+            type="number"
+            min="1"
+            value={targetId}
+            onChange={(event) => {
+              setTargetId(
+                event.target.value
+              );
+
+              setPage(0);
+            }}
+            placeholder="Target user ID"
+            className="rounded-xl border border-gray-700 bg-gray-950 px-4 py-3 text-white outline-none focus:border-blue-500"
+          />
+
+
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(event) => {
+              setDateFrom(
+                event.target.value
+              );
+
+              setPage(0);
+            }}
+            className="rounded-xl border border-gray-700 bg-gray-950 px-4 py-3 text-white outline-none focus:border-blue-500"
+          />
+
+
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(event) => {
+              setDateTo(
+                event.target.value
+              );
+
+              setPage(0);
+            }}
+            className="rounded-xl border border-gray-700 bg-gray-950 px-4 py-3 text-white outline-none focus:border-blue-500"
+          />
+
+        </div>
+
+
+        <button
+          type="button"
+          onClick={handleClearFilters}
+          className="rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 transition hover:bg-gray-800"
+        >
+          Clear filters
+        </button>
 
       </div>
 
 
+      {/* Audit Table */}
       <section className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-900">
 
         <div className="border-b border-gray-800 px-6 py-5">
@@ -233,7 +370,7 @@ export default function AdminAuditPage() {
         </div>
 
 
-        {!filteredLogs.length ? (
+        {!logs.length ? (
 
           <div className="px-6 py-16 text-center text-gray-500">
             No audit events found.
@@ -276,7 +413,7 @@ export default function AdminAuditPage() {
 
               <tbody>
 
-                {filteredLogs.map(
+                {logs.map(
                   (log) => (
 
                     <tr
@@ -338,6 +475,7 @@ export default function AdminAuditPage() {
       </section>
 
 
+      {/* Pagination */}
       <div className="flex items-center justify-between">
 
         <button
@@ -360,15 +498,14 @@ export default function AdminAuditPage() {
 
         <span className="text-sm text-gray-500">
           Page {page + 1}
+          {" · "}
+          {total} results
         </span>
 
 
         <button
           type="button"
-          disabled={
-            logs.length
-            < limit
-          }
+          disabled={!hasNextPage}
           onClick={() =>
             setPage(
               (current) =>

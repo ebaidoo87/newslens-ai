@@ -4,15 +4,47 @@ import { api } from "./api";
 export interface AuditLog {
   id: number;
 
-  admin_user_id: number | null;
+  admin_user_id:
+    number | null;
 
-  target_user_id: number | null;
+  target_user_id:
+    number | null;
 
   action: string;
 
-  details: string | null;
+  details:
+    string | null;
 
   created_at: string;
+}
+
+
+export interface AuditLogResponse {
+  items: AuditLog[];
+
+  total: number;
+
+  skip: number;
+
+  limit: number;
+}
+
+
+export interface AuditFilters {
+  skip?: number;
+  limit?: number;
+
+  action?: string;
+
+  admin_user_id?: number;
+
+  target_user_id?: number;
+
+  date_from?: string;
+
+  date_to?: string;
+
+  search?: string;
 }
 
 
@@ -22,34 +54,14 @@ export interface AuditStats {
 
 
 export async function getAuditLogs(
-  skip = 0,
-  limit = 50,
-): Promise<AuditLog[]> {
+  filters: AuditFilters,
+): Promise<AuditLogResponse> {
+
   const response =
-    await api.get<AuditLog[]>(
+    await api.get<AuditLogResponse>(
       "/admin/audit",
       {
-        params: {
-          skip,
-          limit,
-        },
-      },
-    );
-
-  return response.data;
-}
-
-
-export async function getRecentAuditLogs(
-  limit = 20,
-): Promise<AuditLog[]> {
-  const response =
-    await api.get<AuditLog[]>(
-      "/admin/audit/recent",
-      {
-        params: {
-          limit,
-        },
+        params: filters,
       },
     );
 
@@ -59,9 +71,26 @@ export async function getRecentAuditLogs(
 
 export async function getAuditStats():
 Promise<AuditStats> {
+
   const response =
     await api.get<AuditStats>(
       "/admin/audit/stats",
+    );
+
+  return response.data;
+}
+
+export async function getRecentAuditLogs(
+  limit = 8,
+): Promise<AuditLog[]> {
+  const response =
+    await api.get<AuditLog[]>(
+      "/admin/audit/recent",
+      {
+        params: {
+          limit,
+        },
+      },
     );
 
   return response.data;

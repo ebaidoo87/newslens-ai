@@ -16,6 +16,8 @@ import {
   useAdminUserStats,
 } from "../hooks/useAdminDashboard";
 
+import RecentAuditActivity
+from "../components/RecentAuditActivity";
 
 export default function AdminDashboardPage() {
   const {
@@ -472,6 +474,7 @@ export default function AdminDashboardPage() {
             </table>
           </div>
         )}
+        <RecentAuditActivity />
 
       </section>
 

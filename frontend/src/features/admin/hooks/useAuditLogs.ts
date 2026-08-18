@@ -2,55 +2,32 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 
+
 import {
   getAuditLogs,
   getAuditStats,
   getRecentAuditLogs,
+  type AuditFilters,
 } from "../../../shared/services/auditApi";
 
-
 export function useAuditLogs(
-  skip = 0,
-  limit = 50,
+  filters: AuditFilters,
 ) {
   return useQuery({
     queryKey: [
       "admin",
       "audit",
-      skip,
-      limit,
+      filters,
     ],
 
     queryFn: () =>
       getAuditLogs(
-        skip,
-        limit,
+        filters
       ),
 
     staleTime: 30_000,
 
     refetchInterval: 60_000,
-  });
-}
-
-
-export function useRecentAuditLogs(
-  limit = 20,
-) {
-  return useQuery({
-    queryKey: [
-      "admin",
-      "audit",
-      "recent",
-      limit,
-    ],
-
-    queryFn: () =>
-      getRecentAuditLogs(
-        limit,
-      ),
-
-    staleTime: 30_000,
   });
 }
 
@@ -66,5 +43,27 @@ export function useAuditStats() {
     queryFn: getAuditStats,
 
     staleTime: 30_000,
+  });
+}
+
+export function useRecentAuditLogs(
+  limit = 8,
+) {
+  return useQuery({
+    queryKey: [
+      "admin",
+      "audit",
+      "recent",
+      limit,
+    ],
+
+    queryFn: () =>
+      getRecentAuditLogs(
+        limit,
+      ),
+
+    staleTime: 30_000,
+
+    refetchInterval: 60_000,
   });
 }
