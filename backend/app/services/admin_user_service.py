@@ -2,11 +2,17 @@ from fastapi import HTTPException
 
 from sqlalchemy.orm import Session
 
+from app.core.security import hash_password
+
+from app.models.user import User
+
 from app.repositories.admin_repository import (
     AdminRepository,
 )
 
-from app.core.security import hash_password
+from app.services.audit_service import (
+    AuditService,
+)
 
 
 class AdminUserService:
@@ -19,6 +25,10 @@ class AdminUserService:
 
         self.repository = (
             AdminRepository()
+        )
+
+        self.audit_service = (
+            AuditService(db)
         )
 
     def get_users(self):
@@ -51,7 +61,7 @@ class AdminUserService:
         self,
         user_id: int,
         new_role: str,
-        current_admin_id: int,
+        current_admin: User,
     ):
         if new_role not in {
             "user",
@@ -66,7 +76,7 @@ class AdminUserService:
             user_id
         )
 
-        if user.id == current_admin_id:
+        if user.id == current_admin.id:
             raise HTTPException(
                 status_code=400,
                 detail=(
@@ -75,7 +85,7 @@ class AdminUserService:
                 ),
             )
 
-        return (
+        updated_user = (
             self.repository.update_role(
                 self.db,
                 user,
@@ -83,17 +93,33 @@ class AdminUserService:
             )
         )
 
+        self.audit_service.log(
+            admin=current_admin,
+            target=updated_user,
+            action=(
+                "promote_user"
+                if new_role == "admin"
+                else "demote_user"
+            ),
+            details=(
+                f"Changed role to "
+                f"{new_role}"
+            ),
+        )
+
+        return updated_user
+
     def update_active_status(
         self,
         user_id: int,
         active: bool,
-        current_admin_id: int,
+        current_admin: User,
     ):
         user = self.get_user(
             user_id,
         )
 
-        if user.id == current_admin_id:
+        if user.id == current_admin.id:
             raise HTTPException(
                 status_code=400,
                 detail=(
@@ -102,26 +128,44 @@ class AdminUserService:
                 ),
             )
 
-        return (
-            self.repository.update_active_status(
+        updated_user = (
+            self.repository
+            .update_active_status(
                 self.db,
                 user,
                 active,
             )
         )
 
+        self.audit_service.log(
+            admin=current_admin,
+            target=updated_user,
+            action=(
+                "activate_user"
+                if active
+                else "suspend_user"
+            ),
+            details=(
+                "Account activated"
+                if active
+                else "Account suspended"
+            ),
+        )
+
+        return updated_user
+
     def reset_password(
         self,
         user_id: int,
         new_password: str,
         confirm_new_password: str,
-        current_admin_id: int,
+        current_admin: User,
     ):
         user = self.get_user(
             user_id
         )
 
-        if user.id == current_admin_id:
+        if user.id == current_admin.id:
             raise HTTPException(
                 status_code=400,
                 detail=(
@@ -162,18 +206,28 @@ class AdminUserService:
         self.db.commit()
         self.db.refresh(user)
 
+        self.audit_service.log(
+            admin=current_admin,
+            target=user,
+            action="reset_password",
+            details=(
+                "Administrator reset "
+                "user password."
+            ),
+        )
+
         return user
 
     def delete_user(
         self,
         user_id: int,
-        current_admin_id: int,
+        current_admin: User,
     ) -> None:
         user = self.get_user(
             user_id
         )
 
-        if user.id == current_admin_id:
+        if user.id == current_admin.id:
             raise HTTPException(
                 status_code=400,
                 detail=(
@@ -182,7 +236,20 @@ class AdminUserService:
                 ),
             )
 
+        username = user.username
+        email = user.email
+
+        self.audit_service.log(
+            admin=current_admin,
+            target=user,
+            action="delete_user",
+            details=(
+                f"Deleted {username} "
+                f"({email})"
+            ),
+        )
+
         self.repository.delete_user(
             self.db,
             user,
-    )
+        )

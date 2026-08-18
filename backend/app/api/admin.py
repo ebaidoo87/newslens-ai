@@ -222,8 +222,8 @@ def update_user_role(
     return service.update_role(
         user_id=user_id,
         new_role=payload.role,
-        current_admin_id=(
-            current_admin.id
+        current_admin=(
+            current_admin
         ),
     )
 
@@ -246,7 +246,7 @@ def update_user_status(
     return service.update_active_status(
         user_id=user_id,
         active=payload.is_active,
-        current_admin_id=current_admin.id,
+        current_admin=current_admin,
     )
 
 
@@ -267,8 +267,8 @@ def delete_user(
 
     service.delete_user(
         user_id=user_id,
-        current_admin_id=(
-            current_admin.id
+        current_admin=(
+            current_admin
         ),
     )
 
@@ -304,8 +304,8 @@ def reset_user_password(
         confirm_new_password=(
             payload.confirm_new_password
         ),
-        current_admin_id=(
-            current_admin.id
+        current_admin=(
+            current_admin
         ),
     )
 
