@@ -13,6 +13,10 @@ import {
 } from "lucide-react";
 
 import {
+  ClipboardList,
+} from "lucide-react";
+
+import {
   Activity,
   ShieldCheck,
 } from "lucide-react";
@@ -81,15 +85,21 @@ export const sidebarItems = [
   adminOnly: true,
   },
   {
-    label: "Email Delivery",
-    path: "/email-monitoring",
-    icon: Activity,
-    adminOnly: true,
-  },
-  {
     label: "Users",
     path: "/admin/users",
     icon: Users,
+    adminOnly: true,
+  },
+  {
+  label: "Audit Logs",
+  path: "/admin/audit",
+  icon: ClipboardList,
+  adminOnly: true,
+  },
+    {
+    label: "Email Delivery",
+    path: "/email-monitoring",
+    icon: Activity,
     adminOnly: true,
   },
 ];
