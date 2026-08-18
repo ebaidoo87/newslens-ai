@@ -43,6 +43,10 @@ from app.schemas.admin import (
     AdminUserStatusUpdate,
 )
 
+from app.services.admin_analytics_service import (
+    AdminAnalyticsService,
+)
+
 router = APIRouter(
     prefix="/admin",
     tags=["Admin"],
@@ -315,3 +319,15 @@ def reset_user_password(
             "Password reset successfully."
         ),
     }
+
+@router.get(
+    "/analytics/summary",
+)
+def get_admin_analytics_summary(
+    db: Session = Depends(get_db),
+):
+    service = (
+        AdminAnalyticsService(db)
+    )
+
+    return service.get_summary()
