@@ -32,3 +32,7 @@ class AdminUserRoleUpdate(BaseModel):
 
 class AdminUserStatusUpdate(BaseModel):
     is_active: bool
+
+class AdminPasswordReset(BaseModel):
+    new_password: str
+    confirm_new_password: str

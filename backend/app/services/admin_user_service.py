@@ -6,6 +6,8 @@ from app.repositories.admin_repository import (
     AdminRepository,
 )
 
+from app.core.security import hash_password
+
 
 class AdminUserService:
 
@@ -107,3 +109,80 @@ class AdminUserService:
                 active,
             )
         )
+
+    def reset_password(
+        self,
+        user_id: int,
+        new_password: str,
+        confirm_new_password: str,
+        current_admin_id: int,
+    ):
+        user = self.get_user(
+            user_id
+        )
+
+        if user.id == current_admin_id:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Use your account settings "
+                    "to change your own password."
+                ),
+            )
+
+        if (
+            new_password
+            != confirm_new_password
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Passwords do not match."
+                ),
+            )
+
+        if len(new_password) < 8:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Password must be at least "
+                    "8 characters long."
+                ),
+            )
+
+        user.hashed_password = (
+            hash_password(
+                new_password
+            )
+        )
+
+        # Invalidate existing login tokens.
+        user.token_version += 1
+
+        self.db.commit()
+        self.db.refresh(user)
+
+        return user
+
+    def delete_user(
+        self,
+        user_id: int,
+        current_admin_id: int,
+    ) -> None:
+        user = self.get_user(
+            user_id
+        )
+
+        if user.id == current_admin_id:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "You cannot delete "
+                    "your own account."
+                ),
+            )
+
+        self.repository.delete_user(
+            self.db,
+            user,
+    )

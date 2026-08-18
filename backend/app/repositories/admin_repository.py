@@ -67,3 +67,11 @@ class AdminRepository:
         db.refresh(user)
 
         return user
+
+    def delete_user(
+        self,
+        db: Session,
+        user: User,
+    ) -> None:
+        db.delete(user)
+        db.commit()

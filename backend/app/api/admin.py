@@ -36,6 +36,13 @@ from app.schemas.admin import (
     AdminUserStatusUpdate,
 )
 
+from app.schemas.admin import (
+    AdminPasswordReset,
+    AdminUserResponse,
+    AdminUserRoleUpdate,
+    AdminUserStatusUpdate,
+)
+
 router = APIRouter(
     prefix="/admin",
     tags=["Admin"],
@@ -241,3 +248,70 @@ def update_user_status(
         active=payload.is_active,
         current_admin_id=current_admin.id,
     )
+
+
+
+@router.delete(
+    "/users/{user_id}",
+)
+def delete_user(
+    user_id: int,
+    current_admin: User = Depends(
+        require_admin
+    ),
+    db: Session = Depends(get_db),
+):
+    service = AdminUserService(
+        db
+    )
+
+    service.delete_user(
+        user_id=user_id,
+        current_admin_id=(
+            current_admin.id
+        ),
+    )
+
+    return {
+        "success": True,
+        "message": (
+            "User account deleted."
+        ),
+    }
+
+@router.patch(
+    "/users/{user_id}/password",
+)
+def reset_user_password(
+    user_id: int,
+    payload: AdminPasswordReset,
+    current_admin: User = Depends(
+        require_admin
+    ),
+    db: Session = Depends(
+        get_db
+    ),
+):
+    service = AdminUserService(
+        db
+    )
+
+    service.reset_password(
+        user_id=user_id,
+        new_password=(
+            payload.new_password
+        ),
+        confirm_new_password=(
+            payload.confirm_new_password
+        ),
+        current_admin_id=(
+            current_admin.id
+        ),
+    )
+
+    return {
+        "success": True,
+        "message": (
+            "Password reset successfully."
+        ),
+    }
