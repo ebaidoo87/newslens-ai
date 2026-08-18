@@ -19,6 +19,9 @@ import {
 import RecentAuditActivity
 from "../components/RecentAuditActivity";
 
+import AdminAnalyticsPanel
+from "../components/AdminAnalyticsPanel";
+
 export default function AdminDashboardPage() {
   const {
     data: dashboard,
@@ -475,6 +478,7 @@ export default function AdminDashboardPage() {
           </div>
         )}
         <RecentAuditActivity />
+        <AdminAnalyticsPanel />
 
       </section>
 
