@@ -14,6 +14,8 @@ from app.models.email_suppression import (
     EmailSuppression,
 )
 
+from app.models.audit_log import AuditLog
+
 __all__ = [
     "Article",
     "Bookmark",
@@ -24,4 +26,5 @@ __all__ = [
     "EmailQueue",
     "DigestNotification",
     "EmailSuppression",
+    "AuditLog",
 ]
