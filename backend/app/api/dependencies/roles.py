@@ -11,6 +11,10 @@ from app.api.auth import (
 )
 from app.models.user import User
 
+from app.core.exceptions import (
+    ForbiddenException,
+)
+
 
 def require_admin(
     current_user: User = Depends(
@@ -18,13 +22,11 @@ def require_admin(
     ),
 ) -> User:
     if current_user.role != "admin":
-        raise HTTPException(
-            status_code=(
-                status.HTTP_403_FORBIDDEN
-            ),
-            detail=(
+        raise ForbiddenException(
+            message=(
                 "Administrator access required"
             ),
+            code="ADMIN_REQUIRED",
         )
 
     return current_user

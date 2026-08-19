@@ -14,6 +14,10 @@ from app.services.audit_service import (
     AuditService,
 )
 
+from app.core.exceptions import (
+    BadRequestException,
+    NotFoundException,
+)
 
 class AdminUserService:
 
@@ -50,9 +54,9 @@ class AdminUserService:
         )
 
         if not user:
-            raise HTTPException(
-                status_code=404,
-                detail="User not found",
+            raise NotFoundException(
+                message="User not found",
+                code="USER_NOT_FOUND",
             )
 
         return user
@@ -67,9 +71,9 @@ class AdminUserService:
             "user",
             "admin",
         }:
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid role",
+            raise BadRequestException(
+                message="Invalid role",
+                code="INVALID_USER_ROLE",
             )
 
         user = self.get_user(
@@ -77,12 +81,12 @@ class AdminUserService:
         )
 
         if user.id == current_admin.id:
-            raise HTTPException(
-                status_code=400,
-                detail=(
+            raise BadRequestException(
+                message=(
                     "You cannot change "
                     "your own admin role"
                 ),
+                code="SELF_ROLE_CHANGE_NOT_ALLOWED",
             )
 
         updated_user = (

@@ -70,6 +70,24 @@ from app.api.admin_audit import (
     router as admin_audit_router,
 )
 
+from fastapi.exceptions import (
+    RequestValidationError,
+)
+from starlette.exceptions import (
+    HTTPException as StarletteHTTPException,
+)
+
+from app.core.exceptions import (
+    AppException,
+)
+
+from app.core.exception_handlers import (
+    app_exception_handler,
+    http_exception_handler,
+    unhandled_exception_handler,
+    validation_exception_handler,
+)
+
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
 
@@ -85,6 +103,26 @@ app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     lifespan=lifespan,
+)
+
+app.add_exception_handler(
+    AppException,
+    app_exception_handler,
+)
+
+app.add_exception_handler(
+    StarletteHTTPException,
+    http_exception_handler,
+)
+
+app.add_exception_handler(
+    RequestValidationError,
+    validation_exception_handler,
+)
+
+app.add_exception_handler(
+    Exception,
+    unhandled_exception_handler,
 )
 
 
