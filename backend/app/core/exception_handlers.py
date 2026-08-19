@@ -18,9 +18,16 @@ async def app_exception_handler(
     exc: AppException,
 ):
     logger.warning(
-        "Application error: %s %s - %s",
+        "Application error "
+        "request_id=%s "
+        "method=%s "
+        "path=%s "
+        "code=%s "
+        "message=%s",
+        get_request_id(request),
         request.method,
         request.url.path,
+        exc.code,
         exc.message,
     )
 
@@ -48,10 +55,17 @@ async def http_exception_handler(
     exc: StarletteHTTPException,
 ):
     logger.warning(
-        "HTTP error: %s %s - %s",
+        "Application error "
+        "request_id=%s "
+        "method=%s "
+        "path=%s "
+        "code=%s "
+        "message=%s",
+        get_request_id(request),
         request.method,
         request.url.path,
-        exc.detail,
+        exc.code,
+        exc.message,
     )
 
     return JSONResponse(
@@ -76,9 +90,17 @@ async def validation_exception_handler(
     exc: RequestValidationError,
 ):
     logger.warning(
-        "Validation error: %s %s",
+        "Application error "
+        "request_id=%s "
+        "method=%s "
+        "path=%s "
+        "code=%s "
+        "message=%s",
+        get_request_id(request),
         request.method,
         request.url.path,
+        exc.code,
+        exc.message,
     )
 
     return JSONResponse(
@@ -105,7 +127,11 @@ async def unhandled_exception_handler(
     exc: Exception,
 ):
     logger.exception(
-        "Unhandled exception: %s %s",
+        "Unhandled exception "
+        "request_id=%s "
+        "method=%s "
+        "path=%s",
+        get_request_id(request),
         request.method,
         request.url.path,
     )
@@ -123,4 +149,13 @@ async def unhandled_exception_handler(
                 ),
             },
         },
+    )
+
+def get_request_id(
+    request: Request,
+) -> str:
+    return getattr(
+        request.state,
+        "request_id",
+        "unknown",
     )

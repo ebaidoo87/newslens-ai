@@ -88,6 +88,16 @@ from app.core.exception_handlers import (
     validation_exception_handler,
 )
 
+from app.core.logging import (
+    configure_logging,
+    logger,
+)
+
+from app.middleware.request_logging import (
+    RequestLoggingMiddleware,
+)
+
+
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
 
@@ -99,11 +109,21 @@ async def lifespan(app: FastAPI):
     yield
 
 
+configure_logging(
+    level=(
+        "DEBUG"
+        if settings.DEBUG
+        else "INFO"
+    )
+)
+
+
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     lifespan=lifespan,
 )
+
 
 app.add_exception_handler(
     AppException,
@@ -125,6 +145,9 @@ app.add_exception_handler(
     unhandled_exception_handler,
 )
 
+app.add_middleware(
+    RequestLoggingMiddleware
+)
 
 app.add_middleware(
     CORSMiddleware,
