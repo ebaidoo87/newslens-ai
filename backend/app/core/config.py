@@ -2,6 +2,8 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from pydantic import model_validator
+
 
 class Settings(BaseSettings):
     app_name: str = "NewsLens AI API"
@@ -21,15 +23,25 @@ class Settings(BaseSettings):
 
     log_level: str = "INFO"
 
+    SECRET_KEY: str
+
+
+    DATABASE_URL: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+
+    ENVIRONMENT: str = "development"
+    DEBUG: bool = True
+
+    RESEND_API_KEY: str | None = None
+    RESEND_WEBHOOK_SECRET: str | None = None
+
+    EMAIL_FROM: str = "NewsLens AI <noreply@example.com>"
+
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=False,
     )
-
-    RESEND_API_KEY: str = ""
-    EMAIL_FROM: str = ""
-
-    RESEND_WEBHOOK_SECRET: str = ""
 
 
 @lru_cache
@@ -38,3 +50,15 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
+
+@model_validator(mode="after")
+def validate_production(self):
+
+    if self.ENVIRONMENT == "production":
+
+        if self.DEBUG:
+            raise ValueError(
+                "DEBUG cannot be enabled in production."
+            )
+
+    return self
