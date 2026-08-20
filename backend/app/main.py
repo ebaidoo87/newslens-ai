@@ -116,16 +116,68 @@ from app.api.health import (
     router as health_router,
 )
 
+from app.db.session import (
+    SessionLocal,
+)
+
+from app.services.startup_service import (
+    StartupService,
+)
+
+from app.core.logging import (
+    logger,
+)
+
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
+from app.core.logging import logger
+from app.db import SessionLocal
+from app.db.init_db import init_db
+from app.services.scheduler import start_scheduler
+from app.services.startup_service import (
+    StartupService,
+)
+
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(
+    app: FastAPI,
+):
     init_db()
-    logger.info("Database initialized")
-    start_scheduler()
-    yield
 
+    logger.info(
+        "Database initialized"
+    )
+
+    db = SessionLocal()
+
+    try:
+        startup = StartupService(
+            db
+        )
+
+        startup.check_database_connection()
+
+        logger.info(
+            "Database connection established."
+        )
+
+        startup.validate_schema()
+
+        logger.info(
+            "Database startup validation passed."
+        )
+
+    finally:
+        db.close()
+
+    start_scheduler()
+
+    yield
 
 configure_logging(
     level=(
@@ -303,13 +355,17 @@ def db_check():
     db = SessionLocal()
 
     try:
-        db.execute(text("SELECT 1"))
+        startup = StartupService(
+            db
+        )
 
-        return {
-            "database": "connected"
-        }
-    
-    
+        startup.check_database_connection()
+
+        startup.validate_schema()
+
+        logger.info(
+            "Database startup validation passed."
+        )
 
     finally:
         db.close()
