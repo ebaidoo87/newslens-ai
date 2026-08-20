@@ -2,6 +2,7 @@ from fastapi import (
     APIRouter,
     Depends,
     Query,
+    Request,
 )
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -45,6 +46,10 @@ from app.schemas.admin import (
 
 from app.services.admin_analytics_service import (
     AdminAnalyticsService,
+)
+
+from app.core.rate_limit import (
+    limiter,
 )
 
 router = APIRouter(
@@ -286,7 +291,9 @@ def delete_user(
 @router.patch(
     "/users/{user_id}/password",
 )
+@limiter.limit("5/minute")
 def reset_user_password(
+    request: Request,
     user_id: int,
     payload: AdminPasswordReset,
     current_admin: User = Depends(
@@ -308,9 +315,7 @@ def reset_user_password(
         confirm_new_password=(
             payload.confirm_new_password
         ),
-        current_admin=(
-            current_admin
-        ),
+        current_admin=current_admin,
     )
 
     return {

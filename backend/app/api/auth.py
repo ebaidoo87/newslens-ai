@@ -1,7 +1,9 @@
+
 from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
+    Request,
     status,
 )
 from fastapi.security import OAuth2PasswordBearer
@@ -34,6 +36,11 @@ from app.schemas.user import (
     UserUpdate,
 )
 
+from fastapi import Request
+
+from app.core.rate_limit import (
+    limiter,
+)
 
 router = APIRouter(
     prefix="/auth",
@@ -49,20 +56,28 @@ oauth2_scheme = OAuth2PasswordBearer(
 @router.post(
     "/register",
     response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED,
+    status_code=(
+        status.HTTP_201_CREATED
+    ),
 )
+@limiter.limit("5/minute")
 def register_user(
+    request: Request,
     user_data: UserRegister,
     db: Session = Depends(get_db),
 ):
     service = AuthService(db)
 
     try:
-        return service.register(user_data)
+        return service.register(
+            user_data
+        )
 
     except ValueError as error:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+            status_code=(
+                status.HTTP_409_CONFLICT
+            ),
             detail=str(error),
         ) from error
 
@@ -71,21 +86,28 @@ def register_user(
     "/login",
     response_model=Token,
 )
+@limiter.limit("10/minute")
 def login_user(
+    request: Request,
     credentials: UserLogin,
     db: Session = Depends(get_db),
 ):
     service = AuthService(db)
 
     try:
-        return service.login(credentials)
+        return service.login(
+            credentials
+        )
 
     except ValueError as error:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=(
+                status.HTTP_401_UNAUTHORIZED
+            ),
             detail=str(error),
             headers={
-                "WWW-Authenticate": "Bearer",
+                "WWW-Authenticate":
+                    "Bearer",
             },
         ) from error
 
@@ -173,7 +195,9 @@ def update_current_user(
     "/password",
     status_code=status.HTTP_204_NO_CONTENT,
 )
+@limiter.limit("5/minute")
 def change_current_user_password(
+    request: Request,
     password_data: PasswordChange,
     current_user: User = Depends(
         get_current_user
@@ -200,7 +224,9 @@ def change_current_user_password(
     "/logout-all",
     status_code=status.HTTP_204_NO_CONTENT,
 )
+@limiter.limit("5/minute")
 def logout_from_all_devices(
+    request: Request,
     current_user: User = Depends(
         get_current_user
     ),

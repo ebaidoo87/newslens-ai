@@ -97,6 +97,20 @@ from app.middleware.request_logging import (
     RequestLoggingMiddleware,
 )
 
+from starlette.middleware.trustedhost import (
+    TrustedHostMiddleware,
+)
+
+from app.middleware.security_headers import (
+    SecurityHeadersMiddleware,
+)
+
+from slowapi.errors import (
+    RateLimitExceeded,
+)
+from slowapi import _rate_limit_exceeded_handler
+
+from app.core.rate_limit import limiter
 
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
@@ -124,6 +138,12 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.state.limiter = limiter
+
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler,
+)
 
 app.add_exception_handler(
     AppException,
@@ -150,13 +170,27 @@ app.add_middleware(
 )
 
 app.add_middleware(
+    SecurityHeadersMiddleware
+)
+
+
+app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-    ],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=[
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "OPTIONS",
+    ],
+    allow_headers=[
+        "Authorization",
+        "Content-Type",
+        "X-Request-ID",
+    ],
 )
 
 
@@ -228,6 +262,11 @@ app.include_router(
 app.include_router(
     admin_audit_router,
     prefix="/api",
+)
+
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=settings.TRUSTED_HOSTS,
 )
 
 logger.info("Starting NewsLens AI")
