@@ -2,47 +2,113 @@
 
 Revision ID: 32f45fc38d3d
 Revises: d804f8553929
-Create Date: 2026-08-21 00:10:04.497775
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
 
 
-# revision identifiers, used by Alembic.
-revision: str = '32f45fc38d3d'
-down_revision: Union[str, Sequence[str], None] = 'd804f8553929'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+revision: str = "32f45fc38d3d"
+
+down_revision: Union[
+    str,
+    Sequence[str],
+    None,
+] = "d804f8553929"
+
+branch_labels: Union[
+    str,
+    Sequence[str],
+    None,
+] = None
+
+depends_on: Union[
+    str,
+    Sequence[str],
+    None,
+] = None
 
 
 def upgrade() -> None:
-    op.alter_column(
+    op.create_table(
         "users",
-        "name",
-        new_column_name="username",
-        existing_type=sa.String(length=100),
-        existing_nullable=False,
+
+        sa.Column(
+            "id",
+            sa.Integer(),
+            nullable=False,
+        ),
+
+        sa.Column(
+            "name",
+            sa.String(length=100),
+            nullable=False,
+        ),
+
+        sa.Column(
+            "email",
+            sa.String(length=255),
+            nullable=False,
+        ),
+
+        sa.Column(
+            "hashed_password",
+            sa.String(length=255),
+            nullable=False,
+        ),
+
+        sa.Column(
+            "created_at",
+            sa.DateTime(),
+            server_default=sa.text(
+                "now()"
+            ),
+            nullable=False,
+        ),
+
+        sa.Column(
+            "updated_at",
+            sa.DateTime(),
+            server_default=sa.text(
+                "now()"
+            ),
+            nullable=False,
+        ),
+
+        sa.PrimaryKeyConstraint(
+            "id"
+        ),
     )
+
     op.create_index(
-        op.f("ix_users_username"),
+        op.f("ix_users_id"),
         "users",
-        ["username"],
+        ["id"],
+        unique=False,
+    )
+
+    op.create_index(
+        op.f("ix_users_email"),
+        "users",
+        ["email"],
         unique=True,
     )
 
 
 def downgrade() -> None:
     op.drop_index(
-        op.f("ix_users_username"),
+        op.f("ix_users_email"),
         table_name="users",
     )
-    op.alter_column(
-        "users",
-        "username",
-        new_column_name="name",
-        existing_type=sa.String(length=100),
-        existing_nullable=False,
+
+    op.drop_index(
+        op.f("ix_users_id"),
+        table_name="users",
+    )
+
+    op.drop_table(
+        "users"
     )
