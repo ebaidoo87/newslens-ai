@@ -112,6 +112,10 @@ from slowapi import _rate_limit_exceeded_handler
 
 from app.core.rate_limit import limiter
 
+from app.api.health import (
+    router as health_router,
+)
+
 print("News API URL:", settings.NEWS_API_URL)
 print("API Key Loaded:", bool(settings.NEWS_API_KEY))
 
@@ -261,6 +265,11 @@ app.include_router(
 
 app.include_router(
     admin_audit_router,
+    prefix="/api",
+)
+
+app.include_router(
+    health_router,
     prefix="/api",
 )
 
