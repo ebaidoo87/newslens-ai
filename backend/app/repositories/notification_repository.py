@@ -44,6 +44,7 @@ class NotificationRepository:
 
         return notifications
 
+
     def get_all_by_user(
         self,
         db: Session,
