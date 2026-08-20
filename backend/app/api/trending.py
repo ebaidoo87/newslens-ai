@@ -13,7 +13,6 @@ from app.services.trending_service import (
     TrendingService,
 )
 
-
 router = APIRouter(
     prefix="/trending",
     tags=["Trending"],

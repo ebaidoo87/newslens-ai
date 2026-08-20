@@ -10,46 +10,27 @@ from sqlalchemy.orm import Session
 from app.api.dependencies.roles import (
     require_admin,
 )
+from app.core.rate_limit import (
+    limiter,
+)
 from app.db.session import get_db
 from app.models.article import Article
 from app.models.notification import Notification
 from app.models.user import User
-from app.services.email_monitoring_service import (
-    EmailMonitoringService,
-)
-
-from app.schemas.admin import (
-    AdminUserResponse,
-)
-
-from app.services.admin_user_service import (
-    AdminUserService,
-)
-
-from app.schemas.admin import (
-    AdminUserResponse,
-    AdminUserRoleUpdate,
-)
-
-from app.schemas.admin import (
-    AdminUserResponse,
-    AdminUserRoleUpdate,
-    AdminUserStatusUpdate,
-)
-
 from app.schemas.admin import (
     AdminPasswordReset,
     AdminUserResponse,
     AdminUserRoleUpdate,
     AdminUserStatusUpdate,
 )
-
 from app.services.admin_analytics_service import (
     AdminAnalyticsService,
 )
-
-from app.core.rate_limit import (
-    limiter,
+from app.services.admin_user_service import (
+    AdminUserService,
+)
+from app.services.email_monitoring_service import (
+    EmailMonitoringService,
 )
 
 router = APIRouter(

@@ -2,7 +2,6 @@ from fastapi import (
     APIRouter,
     Depends,
 )
-
 from sqlalchemy.orm import Session
 
 from app.api.auth import get_current_user
@@ -11,16 +10,9 @@ from app.models.user import User
 from app.schemas.notification import (
     NotificationActionResponse,
     NotificationCountResponse,
-    NotificationResponse,
-)
-
-from app.schemas.notification import (
-    NotificationActionResponse,
-    NotificationCountResponse,
     NotificationDeleteResponse,
     NotificationResponse,
 )
-
 from app.services.notification_service import (
     NotificationService,
 )

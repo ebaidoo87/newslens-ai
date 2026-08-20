@@ -1,13 +1,12 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from app.models.audit_log import AuditLog
 from app.models.user import User
-
 from app.repositories.audit_repository import (
     AuditRepository,
 )
-
-from datetime import datetime
 
 
 class AuditService:

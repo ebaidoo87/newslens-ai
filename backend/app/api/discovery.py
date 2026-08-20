@@ -15,7 +15,6 @@ from app.services.discovery_service import (
     DiscoveryService,
 )
 
-
 router = APIRouter(
     prefix="/discover",
     tags=["Discovery"],

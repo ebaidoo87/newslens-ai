@@ -1,21 +1,14 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
 
 from app.db.base import Base
 
-from sqlalchemy.orm import (
-    Mapped,
-    mapped_column,
-    relationship,
-)
-
-from sqlalchemy.orm import (
-    Mapped,
-    mapped_column,
-    relationship,
-)
 
 class Article(Base):
     __tablename__ = "articles"

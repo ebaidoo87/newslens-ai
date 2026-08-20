@@ -9,25 +9,13 @@ from fastapi import (
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
+from app.core.rate_limit import (
+    limiter,
+)
 from app.core.security import decode_access_token
 from app.db.session import get_db
-from app.schemas.token import Token
-from app.schemas.user import (
-    UserLogin,
-    UserRegister,
-    UserResponse,
-)
-from app.services.auth_service import AuthService
-
 from app.models.user import User
-
-from app.schemas.user import (
-    UserLogin,
-    UserRegister,
-    UserResponse,
-    UserUpdate,
-)
-
+from app.schemas.token import Token
 from app.schemas.user import (
     PasswordChange,
     UserLogin,
@@ -35,12 +23,7 @@ from app.schemas.user import (
     UserResponse,
     UserUpdate,
 )
-
-from fastapi import Request
-
-from app.core.rate_limit import (
-    limiter,
-)
+from app.services.auth_service import AuthService
 
 router = APIRouter(
     prefix="/auth",
@@ -218,7 +201,6 @@ def change_current_user_password(
             detail=str(error),
         ) from error
 
-    return None
 
 @router.post(
     "/logout-all",
@@ -238,4 +220,3 @@ def logout_from_all_devices(
         current_user
     )
 
-    return None

@@ -1,9 +1,8 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import settings
 
-from sqlalchemy.orm import Session
 
 def get_db():
     db: Session = SessionLocal()

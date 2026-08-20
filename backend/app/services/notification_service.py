@@ -1,21 +1,18 @@
 from collections import defaultdict
 
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.models.article import Article
 from app.models.notification import Notification
+from app.models.user import User
 from app.models.user_preference import UserPreference
 from app.repositories.notification_repository import (
     NotificationRepository,
 )
-
 from app.services.email_queue_service import (
     EmailQueueService,
 )
-
-from app.models.user import User
-
-from fastapi import HTTPException
 
 
 class NotificationService:
@@ -224,14 +221,16 @@ class NotificationService:
                 )
             )
 
-        self.repository.create_many(
-            self.db,
-            notifications,
+        created_notifications = (
+            self.repository.create_many(
+                self.db,
+                notifications,
+            )
         )
 
         for created_notification in (
             created_notifications
-):
+        ):
             user = (
                 self.db.query(User)
                 .filter(
@@ -252,9 +251,10 @@ class NotificationService:
                     user=user,
                 )
 
-
-        return len(notifications)
-
+        return len(
+            created_notifications
+        )
+    
     def get_notifications(
         self,
         user_id: int,

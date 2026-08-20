@@ -18,7 +18,6 @@ from app.services.bookmark_service import (
     BookmarkService,
 )
 
-
 router = APIRouter(
     prefix="/bookmarks",
     tags=["Bookmarks"],
@@ -77,7 +76,6 @@ def delete_bookmark(
             detail=str(error),
         ) from error
 
-    return None
 
 
 @router.get(

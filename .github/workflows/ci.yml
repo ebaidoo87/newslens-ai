@@ -85,6 +85,9 @@ jobs:
         run: |
           python -m compileall app
 
+      - name: Lint backend
+        run: ruff check app --select E9,F63,F7,F82
+
       - name: Run database migrations
         run: alembic upgrade head
 

@@ -1,4 +1,3 @@
-from typing import Optional
 
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -11,8 +10,8 @@ class ArticleRepository:
     def get_articles(
         self,
         db: Session,
-        search: Optional[str] = None,
-        category: Optional[str] = None,
+        search: str | None = None,
+        category: str | None = None,
     ):
         query = db.query(Article)
 

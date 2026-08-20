@@ -9,17 +9,15 @@ from app.data.category_queries import (
     CATEGORY_QUERIES,
 )
 from app.db.session import SessionLocal
-from app.services.import_service import (
-    ImportService,
-)
-
-from app.jobs.email_worker import (
-    process_email_queue,
-)
-
 from app.jobs.digest_jobs import (
     queue_daily_digests,
     queue_weekly_digests,
+)
+from app.jobs.email_worker import (
+    process_email_queue,
+)
+from app.services.import_service import (
+    ImportService,
 )
 
 scheduler = AsyncIOScheduler()

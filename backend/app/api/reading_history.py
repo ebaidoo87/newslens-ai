@@ -18,7 +18,6 @@ from app.services.reading_history_service import (
     ReadingHistoryService,
 )
 
-
 router = APIRouter(
     prefix="/history",
     tags=["Reading History"],
@@ -93,4 +92,3 @@ def clear_reading_history(
         user_id=current_user.id,
     )
 
-    return None

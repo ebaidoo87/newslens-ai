@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 from app.api.dependencies.roles import (
     require_admin,
 )
-
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.email_monitoring import (
@@ -18,7 +17,6 @@ from app.schemas.email_monitoring import (
 from app.services.email_monitoring_service import (
     EmailMonitoringService,
 )
-
 
 router = APIRouter(
     prefix="/email-monitoring",

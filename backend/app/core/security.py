@@ -1,13 +1,7 @@
-from pwdlib import PasswordHash
-
-from datetime import datetime, timedelta, UTC
-from typing import Optional
-
-from jose import jwt
-from passlib.context import CryptContext
+from datetime import UTC, datetime, timedelta
 
 from jose import JWTError, jwt
-
+from pwdlib import PasswordHash
 
 SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET"
 ALGORITHM = "HS256"
@@ -32,7 +26,7 @@ def verify_password(
 
 def create_access_token(
     data: dict,
-    expires_delta: Optional[timedelta] = None,
+    expires_delta: timedelta | None = None,
 ):
     to_encode = data.copy()
 

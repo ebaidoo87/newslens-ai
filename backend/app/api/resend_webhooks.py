@@ -1,7 +1,6 @@
 import json
 
 import resend
-
 from fastapi import (
     APIRouter,
     Depends,
@@ -17,7 +16,6 @@ from app.db.session import get_db
 from app.services.resend_webhook_service import (
     ResendWebhookService,
 )
-
 
 router = APIRouter(
     prefix="/webhooks/resend",

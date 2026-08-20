@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from app.repositories.email_queue_repository import (
     EmailQueueRepository,
 )
-
 from app.services.email_suppression_service import (
     EmailSuppressionService,
 )
+
 
 class ResendWebhookService:
 

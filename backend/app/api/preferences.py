@@ -18,7 +18,6 @@ from app.services.user_preference_service import (
     UserPreferenceService,
 )
 
-
 router = APIRouter(
     prefix="/preferences",
     tags=["User Preferences"],
@@ -120,4 +119,3 @@ def delete_preferences(
         user_id=current_user.id,
     )
 
-    return None

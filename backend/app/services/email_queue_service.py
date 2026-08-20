@@ -1,3 +1,5 @@
+from html import escape
+
 from sqlalchemy.orm import Session
 
 from app.models.email_queue import EmailQueue
@@ -6,12 +8,10 @@ from app.models.user import User
 from app.repositories.email_queue_repository import (
     EmailQueueRepository,
 )
-
-from html import escape
-
 from app.services.email_suppression_service import (
     EmailSuppressionService,
 )
+
 
 class EmailQueueService:
 

@@ -1,12 +1,13 @@
+import platform
+import sys
+import time
+
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.models.article import Article
 from app.models.user import User
 
-import platform
-import sys
-import time
 
 class HealthService:
 

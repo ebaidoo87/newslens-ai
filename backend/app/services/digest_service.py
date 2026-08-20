@@ -17,13 +17,11 @@ from app.repositories.digest_repository import (
 from app.repositories.email_queue_repository import (
     EmailQueueRepository,
 )
-
-from app.services.email_template_service import (
-    EmailTemplateService,
-)
-
 from app.services.email_suppression_service import (
     EmailSuppressionService,
+)
+from app.services.email_template_service import (
+    EmailTemplateService,
 )
 
 
@@ -78,14 +76,6 @@ class DigestService:
             .all()
         )
 
-        if (
-            self.suppression_service
-            .is_suppressed(
-                user.email
-            )
-        ):
-            return None
-
         result: list[User] = []
 
         required_setting = (
@@ -96,6 +86,15 @@ class DigestService:
         )
 
         for user in users:
+
+            if (
+                self.suppression_service
+                .is_suppressed(
+                    user.email
+                )
+            ):
+                continue
+
             preferences = (
                 self.get_email_preferences(
                     user.id
@@ -108,7 +107,9 @@ class DigestService:
                 and required_setting
                 in preferences
             ):
-                result.append(user)
+                result.append(
+                    user
+                )
 
         return result
 

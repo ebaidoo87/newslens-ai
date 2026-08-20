@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.article import Article

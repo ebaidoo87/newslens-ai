@@ -10,7 +10,6 @@ from app.schemas.user_preference import (
     UserPreferenceItem,
 )
 
-
 ALLOWED_PREFERENCE_TYPES = {
     "category",
     "country",

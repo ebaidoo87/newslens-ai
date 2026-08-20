@@ -1,15 +1,35 @@
-from .user import (
-    UserLogin,
-    UserRegister,
-    UserResponse,
-    UserUpdate,
+from .bookmark import (
+    BookmarkedArticleResponse,
+    BookmarkResponse,
+    BookmarkStatusResponse,
 )
-
+from .discovery import (
+    DiscoveredArticleResponse,
+)
+from .email_monitoring import (
+    EmailStatsResponse,
+    RecentEmailResponse,
+)
+from .notification import (
+    NotificationActionResponse,
+    NotificationCountResponse,
+    NotificationDeleteResponse,
+    NotificationResponse,
+)
+from .reading_history import (
+    ReadingHistoryResponse,
+    ViewedArticleResponse,
+)
+from .recommendation import (
+    RecommendedArticleResponse,
+)
 from .token import (
     Token,
     TokenData,
 )
-
+from .trending import (
+    TrendingArticleResponse,
+)
 from .user import (
     PasswordChange,
     UserLogin,
@@ -17,49 +37,8 @@ from .user import (
     UserResponse,
     UserUpdate,
 )
-
-from .bookmark import (
-    BookmarkedArticleResponse,
-    BookmarkResponse,
-    BookmarkStatusResponse,
-)
-
-from .reading_history import (
-    ReadingHistoryResponse,
-    ViewedArticleResponse,
-)
-
 from .user_preference import (
     UserPreferenceItem,
     UserPreferencesResponse,
     UserPreferencesUpdate,
-)
-
-from .recommendation import (
-    RecommendedArticleResponse,
-)
-
-from .trending import (
-    TrendingArticleResponse,
-)
-
-from .discovery import (
-    DiscoveredArticleResponse,
-)
-
-from .notification import (
-    NotificationActionResponse,
-    NotificationCountResponse,
-    NotificationResponse,
-)
-
-from .notification import (
-    NotificationActionResponse,
-    NotificationCountResponse,
-    NotificationDeleteResponse,
-    NotificationResponse,
-)
-from .email_monitoring import (
-    EmailStatsResponse,
-    RecentEmailResponse,
 )

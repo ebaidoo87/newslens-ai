@@ -1,5 +1,10 @@
 from datetime import datetime
 
+from langdetect import (
+    DetectorFactory,
+    LangDetectException,
+    detect,
+)
 from sqlalchemy.orm import Session
 
 from app.data.category_queries import (
@@ -17,12 +22,6 @@ from app.services.news_provider import (
 )
 from app.services.notification_service import (
     NotificationService,
-)
-
-from langdetect import (
-    DetectorFactory,
-    LangDetectException,
-    detect,
 )
 
 DetectorFactory.seed = 0

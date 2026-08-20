@@ -15,7 +15,6 @@ from app.services.import_service import (
     ImportService,
 )
 
-
 router = APIRouter(
     prefix="/news",
     tags=["News"],

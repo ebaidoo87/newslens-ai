@@ -430,8 +430,7 @@ def extract_domain(url: str | None) -> str:
 
     hostname = hostname.lower()
 
-    if hostname.startswith("www."):
-        hostname = hostname[4:]
+    hostname = hostname.removeprefix("www.")
 
     return hostname
 

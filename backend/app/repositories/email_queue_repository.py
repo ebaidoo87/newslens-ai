@@ -4,11 +4,6 @@ from sqlalchemy.orm import Session
 
 from app.models.email_queue import EmailQueue
 
-from datetime import (
-    datetime,
-    timedelta,
-    timezone,
-)
 
 class EmailQueueRepository:
 

@@ -5,13 +5,11 @@ from fastapi import (
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.db.session import get_db
 from app.services.health_service import (
     HealthService,
 )
-
-from app.core.config import settings
-
 
 router = APIRouter(
     prefix="/health",

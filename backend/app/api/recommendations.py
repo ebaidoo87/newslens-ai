@@ -15,7 +15,6 @@ from app.services.recommendation_service import (
     RecommendationService,
 )
 
-
 router = APIRouter(
     prefix="/recommendations",
     tags=["Recommendations"],

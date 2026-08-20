@@ -31,11 +31,16 @@ class NotificationRepository:
         if not notifications:
             return []
 
-        db.add_all(notifications)
+        db.add_all(
+            notifications
+        )
+
         db.commit()
 
         for notification in notifications:
-            db.refresh(notification)
+            db.refresh(
+                notification
+            )
 
         return notifications
 

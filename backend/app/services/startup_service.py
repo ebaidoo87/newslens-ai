@@ -1,8 +1,7 @@
-from sqlalchemy import text
-from sqlalchemy.orm import Session
-
 from alembic.config import Config
 from alembic.script import ScriptDirectory
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from app.core.logging import logger
 

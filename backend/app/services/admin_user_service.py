@@ -1,23 +1,19 @@
 from fastapi import HTTPException
-
 from sqlalchemy.orm import Session
-
-from app.core.security import hash_password
-
-from app.models.user import User
-
-from app.repositories.admin_repository import (
-    AdminRepository,
-)
-
-from app.services.audit_service import (
-    AuditService,
-)
 
 from app.core.exceptions import (
     BadRequestException,
     NotFoundException,
 )
+from app.core.security import hash_password
+from app.models.user import User
+from app.repositories.admin_repository import (
+    AdminRepository,
+)
+from app.services.audit_service import (
+    AuditService,
+)
+
 
 class AdminUserService:
 
