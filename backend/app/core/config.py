@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
 
+    TESTING: bool = False
+
     RESEND_API_KEY: str | None = None
     RESEND_WEBHOOK_SECRET: str | None = None
 

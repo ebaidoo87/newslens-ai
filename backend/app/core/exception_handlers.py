@@ -55,17 +55,15 @@ async def http_exception_handler(
     exc: StarletteHTTPException,
 ):
     logger.warning(
-        "Application error "
+        "HTTP error "
         "request_id=%s "
         "method=%s "
         "path=%s "
-        "code=%s "
-        "message=%s",
+        "status=%s",
         get_request_id(request),
         request.method,
         request.url.path,
-        exc.code,
-        exc.message,
+        exc.status_code,
     )
 
     return JSONResponse(

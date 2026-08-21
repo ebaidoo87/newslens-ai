@@ -93,35 +93,47 @@ print("API Key Loaded:", bool(settings.NEWS_API_KEY))
 async def lifespan(
     app: FastAPI,
 ):
-    init_db()
-
     logger.info(
-        "Database initialized"
+        "Starting NewsLens AI"
     )
 
-    db = SessionLocal()
+    if not settings.TESTING:
 
-    try:
-        startup = StartupService(
-            db
-        )
-
-        startup.check_database_connection()
+        init_db()
 
         logger.info(
-            "Database connection established."
+            "Database initialized"
         )
 
-        startup.validate_schema()
+        db = SessionLocal()
 
+        try:
+            startup = StartupService(
+                db
+            )
+
+            startup.check_database_connection()
+
+            logger.info(
+                "Database connection established."
+            )
+
+            startup.validate_schema()
+
+            logger.info(
+                "Database startup validation passed."
+            )
+
+        finally:
+            db.close()
+
+        start_scheduler()
+
+    else:
         logger.info(
-            "Database startup validation passed."
+            "Testing mode enabled. "
+            "Skipping production startup tasks."
         )
-
-    finally:
-        db.close()
-
-    start_scheduler()
 
     yield
 

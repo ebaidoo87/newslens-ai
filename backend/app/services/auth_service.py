@@ -56,37 +56,49 @@ class AuthService:
     def login(
         self,
         credentials: UserLogin,
-    ) -> dict[str, str]:
-        user = self.repository.get_by_email(
-            self.db,
-            credentials.email,
+    ):
+        user = (
+            self.repository
+            .get_by_email(
+                self.db,
+                credentials.email,
+            )
         )
+
+        if not user:
+            raise ValueError(
+                "Invalid email or password"
+            )
 
         if not user.is_active:
             raise ValueError(
-                "This account has been disabled."
+                "Account is suspended"
             )
-
-        if not user:
-            raise ValueError("Invalid email or password")
 
         if not verify_password(
             credentials.password,
             user.hashed_password,
         ):
-            raise ValueError("Invalid email or password")
+            raise ValueError(
+                "Invalid email or password"
+            )
 
-        access_token = create_access_token(
-            {
-                "sub": user.email,
-                "user_id": user.id,
-                "token_version": user.token_version,
-            }
+        access_token = (
+            create_access_token(
+                {
+                    "sub": user.email,
+                    "user_id": user.id,
+                    "token_version":
+                        user.token_version,
+                }
+            )
         )
 
         return {
-            "access_token": access_token,
-            "token_type": "bearer",
+            "access_token":
+                access_token,
+            "token_type":
+                "bearer",
         }
 
     def get_current_user(
