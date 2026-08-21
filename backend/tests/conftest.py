@@ -1,17 +1,46 @@
+import os
+
+from dotenv import load_dotenv
+
+
+# Load test-specific environment variables
+# BEFORE importing anything from app.
+load_dotenv(
+    ".env.test",
+    override=True,
+)
+
+
+# Ensure the application itself uses
+# the isolated test database.
+test_database_url = os.getenv(
+    "TEST_DATABASE_URL",
+    os.getenv("DATABASE_URL"),
+)
+
+if not test_database_url:
+    raise RuntimeError(
+        "Test database URL is not configured."
+    )
+
+os.environ[
+    "DATABASE_URL"
+] = test_database_url
+
+os.environ[
+    "TESTING"
+] = "true"
+
+
 import pytest
 
 from fastapi.testclient import (
     TestClient,
 )
 
+from app.core.rate_limit import limiter
 from app.db.session import get_db
 from app.main import app
-
-from tests.database import (
-    create_test_schema,
-    drop_test_schema,
-    get_test_db,
-)
 
 from tests.database import (
     clear_test_data,
@@ -19,8 +48,6 @@ from tests.database import (
     drop_test_schema,
     get_test_db,
 )
-
-from app.core.rate_limit import limiter
 
 
 @pytest.fixture(

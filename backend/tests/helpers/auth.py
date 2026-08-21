@@ -322,3 +322,47 @@ def test_suspended_user_cannot_login(
     )
 
     assert response.status_code == 401
+
+def create_authenticated_user(
+    client,
+    *,
+    email: str = "testuser@example.com",
+    username: str = "testuser",
+    password: str = "Password123!",
+):
+    register_response = register_user(
+        client,
+        email=email,
+        username=username,
+        password=password,
+    )
+
+    assert (
+        register_response.status_code
+        == 201
+    )
+
+    login_response = login_user(
+        client,
+        email=email,
+        password=password,
+    )
+
+    assert (
+        login_response.status_code
+        == 200
+    )
+
+    token = (
+        login_response.json()[
+            "access_token"
+        ]
+    )
+
+    return {
+        "token": token,
+        "headers": auth_headers(
+            token
+        ),
+        "user": register_response.json(),
+    }
