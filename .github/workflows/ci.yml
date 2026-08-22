@@ -100,8 +100,13 @@ jobs:
       - name: Run database migrations
         run: alembic upgrade head
 
-      - name: Run backend tests
-        run: pytest -v
+      - name: Run backend tests with coverage
+        run: |
+          pytest -v \
+            --cov=app \
+            --cov-branch \
+            --cov-report=term-missing \
+            --cov-report=xml
 
       - name: Validate database schema
         run: |
