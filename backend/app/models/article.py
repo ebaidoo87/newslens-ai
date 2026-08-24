@@ -1,4 +1,7 @@
-from datetime import datetime
+from datetime import (
+    datetime,
+    timezone,
+)
 
 from sqlalchemy import DateTime, Integer, String, Text
 from sqlalchemy.orm import (
@@ -8,6 +11,13 @@ from sqlalchemy.orm import (
 )
 
 from app.db.base import Base
+
+def utc_now() -> datetime:
+    return datetime.now(
+        timezone.utc
+    ).replace(
+        tzinfo=None
+    )
 
 
 class Article(Base):
@@ -41,13 +51,13 @@ class Article(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
+        default=utc_now,
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=utc_now,
+        onupdate=utc_now,
     )
 
     bookmarks = relationship(

@@ -1,4 +1,7 @@
-from datetime import datetime
+from datetime import (
+    datetime,
+    timezone,
+)
 
 from sqlalchemy.orm import (
     Session,
@@ -69,7 +72,13 @@ class ReadingHistoryRepository:
         db: Session,
         history: ReadingHistory,
     ) -> ReadingHistory:
-        history.viewed_at = datetime.utcnow()
+        history.viewed_at = (
+            datetime.now(
+                timezone.utc
+            ).replace(
+                tzinfo=None
+            )
+        )
 
         db.add(history)
         db.commit()

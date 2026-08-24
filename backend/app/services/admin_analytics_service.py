@@ -1,4 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import (
+    datetime,
+    timedelta,
+    timezone,
+)
 
 from sqlalchemy.orm import Session
 
@@ -17,7 +21,11 @@ class AdminAnalyticsService:
         self.db = db
 
     def get_summary(self):
-        now = datetime.utcnow()
+        now = datetime.now(
+            timezone.utc
+        ).replace(
+            tzinfo=None
+        )
 
         last_7_days = (
             now - timedelta(days=7)

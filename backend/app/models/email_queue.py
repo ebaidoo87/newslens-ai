@@ -1,4 +1,7 @@
-from datetime import datetime
+from datetime import (
+    datetime,
+    timezone,
+)
 
 from sqlalchemy import (
     DateTime,
@@ -14,6 +17,13 @@ from sqlalchemy.orm import (
 )
 
 from app.db.base import Base
+
+def utc_now() -> datetime:
+    return datetime.now(
+        timezone.utc
+    ).replace(
+        tzinfo=None
+    )
 
 
 class EmailQueue(Base):
@@ -87,7 +97,7 @@ class EmailQueue(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
+        default=utc_now,
     )
 
     html_body: Mapped[str | None] = mapped_column(
