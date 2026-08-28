@@ -1,6 +1,15 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
 
-import type { Article } from "../../features/news/types/article";
+import {
+  endpoints,
+} from "../api/endpoints";
+
+import type {
+  Article,
+} from "../../features/news/types/article";
+
 
 export interface Bookmark {
   id: number;
@@ -9,50 +18,69 @@ export interface Bookmark {
   created_at: string;
 }
 
+
 export interface BookmarkedArticle {
   id: number;
   created_at: string;
   article: Article;
 }
 
+
 export interface BookmarkStatus {
   article_id: number;
   is_bookmarked: boolean;
 }
 
+
 export async function addBookmark(
   articleId: number,
-) {
-  const { data } = await api.post(
-    `/bookmarks/${articleId}`,
-  );
+): Promise<Bookmark> {
+  const response =
+    await apiClient.post<Bookmark>(
+      endpoints.bookmarks.add(
+        articleId,
+      ),
+    );
 
-  return data;
+  return response.data;
 }
+
 
 export async function removeBookmark(
   articleId: number,
-) {
-  await api.delete(
-    `/bookmarks/${articleId}`,
+): Promise<void> {
+  await apiClient.delete(
+    endpoints.bookmarks.remove(
+      articleId,
+    ),
   );
 }
 
-export async function getBookmarks() {
-  const { data } = await api.get<
-    BookmarkedArticle[]
-  >("/bookmarks");
 
-  return data;
+export async function getBookmarks():
+Promise<BookmarkedArticle[]> {
+  const response =
+    await apiClient.get<
+      BookmarkedArticle[]
+    >(
+      endpoints.bookmarks.list,
+    );
+
+  return response.data;
 }
+
 
 export async function getBookmarkStatus(
   articleId: number,
-) {
-  const { data } =
-    await api.get<BookmarkStatus>(
-      `/bookmarks/check/${articleId}`,
+): Promise<BookmarkStatus> {
+  const response =
+    await apiClient.get<
+      BookmarkStatus
+    >(
+      endpoints.bookmarks.check(
+        articleId,
+      ),
     );
 
-  return data;
+  return response.data;
 }

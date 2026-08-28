@@ -16,7 +16,7 @@ import {
 
 import {
   usePreferences,
-} from "../../../shared/context/PreferenceContext";
+} from "../../../shared/hooks/usePreferences";
 
 
 export default function RecommendedPage() {

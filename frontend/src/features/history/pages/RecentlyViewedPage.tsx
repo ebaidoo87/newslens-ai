@@ -7,11 +7,12 @@ import ArticleCard from "../../news/components/ArticleCard";
 
 import {
   useReadingHistory,
-} from "../../../shared/context/ReadingHistoryContext";
+} from "../../../shared/hooks/useReadingHistory";
+
 
 import {
   useToast,
-} from "../../../shared/context/ToastContext";
+} from "../../../shared/hooks/useToast";
 
 
 export default function RecentlyViewedPage() {

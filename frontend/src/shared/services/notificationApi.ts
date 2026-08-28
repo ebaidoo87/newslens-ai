@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 import type {
   Article,
@@ -27,11 +33,20 @@ export interface NotificationActionResponse {
 }
 
 
+export interface NotificationDeleteResponse {
+  success: boolean;
+  deleted_count: number;
+  message: string;
+}
+
+
 export async function getNotifications():
 Promise<Notification[]> {
   const response =
-    await api.get<Notification[]>(
-      "/notifications",
+    await apiClient.get<
+      Notification[]
+    >(
+      endpoints.notifications.list,
     );
 
   return response.data;
@@ -41,8 +56,10 @@ Promise<Notification[]> {
 export async function getUnreadCount():
 Promise<number> {
   const response =
-    await api.get<NotificationCountResponse>(
-      "/notifications/count",
+    await apiClient.get<
+      NotificationCountResponse
+    >(
+      endpoints.notifications.count,
     );
 
   return response.data.unread_count;
@@ -53,8 +70,12 @@ export async function markNotificationRead(
   notificationId: number,
 ): Promise<Notification> {
   const response =
-    await api.patch<Notification>(
-      `/notifications/${notificationId}/read`,
+    await apiClient.patch<
+      Notification
+    >(
+      endpoints.notifications.markRead(
+        notificationId,
+      ),
     );
 
   return response.data;
@@ -64,8 +85,10 @@ export async function markNotificationRead(
 export async function markAllNotificationsRead():
 Promise<NotificationActionResponse> {
   const response =
-    await api.patch<NotificationActionResponse>(
-      "/notifications/read-all",
+    await apiClient.patch<
+      NotificationActionResponse
+    >(
+      endpoints.notifications.readAll,
     );
 
   return response.data;
@@ -76,25 +99,25 @@ export async function deleteNotification(
   notificationId: number,
 ): Promise<NotificationActionResponse> {
   const response =
-    await api.delete<NotificationActionResponse>(
-      `/notifications/${notificationId}`,
+    await apiClient.delete<
+      NotificationActionResponse
+    >(
+      endpoints.notifications.deleteOne(
+        notificationId,
+      ),
     );
 
   return response.data;
-}
-
-export interface NotificationDeleteResponse {
-  success: boolean;
-  deleted_count: number;
-  message: string;
 }
 
 
 export async function deleteReadNotifications():
 Promise<NotificationDeleteResponse> {
   const response =
-    await api.delete<NotificationDeleteResponse>(
-      "/notifications/read",
+    await apiClient.delete<
+      NotificationDeleteResponse
+    >(
+      endpoints.notifications.deleteRead,
     );
 
   return response.data;
@@ -104,8 +127,10 @@ Promise<NotificationDeleteResponse> {
 export async function deleteAllNotifications():
 Promise<NotificationDeleteResponse> {
   const response =
-    await api.delete<NotificationDeleteResponse>(
-      "/notifications",
+    await apiClient.delete<
+      NotificationDeleteResponse
+    >(
+      endpoints.notifications.list,
     );
 
   return response.data;

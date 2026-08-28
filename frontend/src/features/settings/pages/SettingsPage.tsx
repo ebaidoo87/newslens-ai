@@ -6,7 +6,12 @@ import {
 
 import axios from "axios";
 
-import { useAuth } from "../../../shared/context/AuthContext";
+import { useAuth } from "../../../shared/hooks/useAuth";
+
+import {
+  normalizeApiError,
+} from "../../../shared/api/errors";
+
 
 import {
   changePassword,
@@ -15,9 +20,6 @@ import {
 
 import { useNavigate } from "react-router-dom";
 
-import {
-  logoutAllDevices,
-} from "../../../shared/services/authApi";
 
 import CategoryPreferences from "../components/CategoryPreferences";
 
@@ -35,6 +37,7 @@ export default function SettingsPage() {
   user,
   refreshUser,
   logout,
+  logoutAll,
   } = useAuth();
 
   const [username, setUsername] =
@@ -229,21 +232,38 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleLogoutAllDevices() {
+  async function handleLogoutAllDevices():
+  Promise<void> {
     setIsLoggingOutEverywhere(true);
 
     try {
-      await logoutAllDevices();
+      await logoutAll();
 
-    logout();
+      navigate(
+        "/login",
+        {
+          replace: true,
+        },
+      );
+    } catch (error) {
+      const apiError =
+        normalizeApiError(
+          error,
+        );
 
-    navigate("/login", {
-      replace: true,
-    });
-  } finally {
-    setIsLoggingOutEverywhere(false);
+      setError(
+        apiError.message
+        || (
+          "Unable to log out from "
+          + "all devices."
+        ),
+      );
+    } finally {
+      setIsLoggingOutEverywhere(
+        false,
+      );
+    }
   }
-}
 
 
   if (!user) {

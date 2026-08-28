@@ -94,12 +94,7 @@ export default function AppRouter() {
           element={<NotFoundPage />} 
         />
         
-        <Route
-          path="/saved"
-          element={
-        <SavedArticlesPage />
-          }
-        />
+        
         <Route
           path="/saved"
           element={

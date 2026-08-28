@@ -9,31 +9,29 @@ import {
 
 
 import {
-
   Link,
-
+  Navigate,
   useLocation,
-
   useNavigate,
-
 } from "react-router-dom";
 
+import {
+  normalizeApiError,
+} from "../../../shared/api/errors";
 
-
-import { useAuth } from "../../../shared/context/AuthContext";
+import {
+  useAuth,
+} from "../../../shared/hooks/useAuth";
 
 
 
 
 
 interface RedirectState {
-
   from?: {
-
     pathname?: string;
-
+    search?: string;
   };
-
 }
 
 
@@ -58,7 +56,11 @@ export default function LoginPage() {
 
 
 
-  const { login } = useAuth();
+  const {
+    login,
+    isAuthenticated,
+    isLoading,
+  } = useAuth();
 
 
 
@@ -115,8 +117,15 @@ export default function LoginPage() {
 
 
       const destination =
-
-        locationState?.from?.pathname ?? "/";
+        locationState?.from
+          ? `${
+              locationState.from.pathname
+              ?? "/"
+            }${
+              locationState.from.search
+              ?? ""
+            }`
+          : "/";
 
 
 
@@ -126,12 +135,23 @@ export default function LoginPage() {
 
       });
 
-    } catch {
+    } catch (requestError) {
+      const apiError =
+        normalizeApiError(
+          requestError,
+        );
+
+      if (apiError.status === 401) {
+        setError(
+          "Invalid email or password. Please try again.",
+        );
+
+        return;
+      }
 
       setError(
-
-        "Invalid email or password. Please try again.",
-
+        apiError.message
+        || "Unable to sign in. Please try again.",
       );
 
     } finally {
@@ -140,6 +160,30 @@ export default function LoginPage() {
 
     }
 
+  }
+
+  if (isLoading) {
+    return (
+      <div
+        className="
+          py-20
+          text-center
+          text-gray-400
+        "
+      >
+        Restoring your session...
+      </div>
+    );
+  }
+
+
+  if (isAuthenticated) {
+    return (
+      <Navigate
+        to="/"
+        replace
+      />
+    );
   }
 
 

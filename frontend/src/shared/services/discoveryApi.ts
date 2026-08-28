@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 import type {
   Article,
@@ -15,16 +21,17 @@ export interface DiscoveredArticle {
 export async function getDiscoveryArticles(
   limit = 20,
 ): Promise<DiscoveredArticle[]> {
-  const response = await api.get<
-    DiscoveredArticle[]
-  >(
-    "/discover",
-    {
-      params: {
-        limit,
+  const response =
+    await apiClient.get<
+      DiscoveredArticle[]
+    >(
+      endpoints.discovery,
+      {
+        params: {
+          limit,
+        },
       },
-    },
-  );
+    );
 
   return response.data;
 }

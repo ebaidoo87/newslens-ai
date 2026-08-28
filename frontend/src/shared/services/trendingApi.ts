@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 import type {
   Article,
@@ -26,8 +32,10 @@ export async function getTrendingArticles({
 }: TrendingOptions = {}):
 Promise<TrendingArticle[]> {
   const response =
-    await api.get<TrendingArticle[]>(
-      "/trending",
+    await apiClient.get<
+      TrendingArticle[]
+    >(
+      endpoints.trending,
       {
         params: {
           country,

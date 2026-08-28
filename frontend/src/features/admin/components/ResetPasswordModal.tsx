@@ -9,7 +9,7 @@ import {
 
 import {
   useToast,
-} from "../../../shared/context/ToastContext";
+} from "../../../shared/hooks/useToast";
 
 import {
   useResetUserPassword,

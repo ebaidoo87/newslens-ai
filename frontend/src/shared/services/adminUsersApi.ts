@@ -1,4 +1,11 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
+
 
 export interface AdminUser {
   id: number;
@@ -18,28 +25,36 @@ export interface AdminUser {
   is_active: boolean;
 }
 
+
 export type UserRole =
   | "user"
   | "admin";
 
+
 export async function getUsers():
 Promise<AdminUser[]> {
-
   const response =
-    await api.get<AdminUser[]>(
-      "/admin/users",
+    await apiClient.get<
+      AdminUser[]
+    >(
+      endpoints.admin.users,
     );
 
   return response.data;
 }
+
 
 export async function updateUserRole(
   userId: number,
   role: UserRole,
 ): Promise<AdminUser> {
   const response =
-    await api.patch<AdminUser>(
-      `/admin/users/${userId}/role`,
+    await apiClient.patch<
+      AdminUser
+    >(
+      endpoints.admin.userRole(
+        userId,
+      ),
       {
         role,
       },
@@ -48,13 +63,18 @@ export async function updateUserRole(
   return response.data;
 }
 
+
 export async function updateUserStatus(
   userId: number,
   isActive: boolean,
 ): Promise<AdminUser> {
   const response =
-    await api.patch<AdminUser>(
-      `/admin/users/${userId}/status`,
+    await apiClient.patch<
+      AdminUser
+    >(
+      endpoints.admin.userStatus(
+        userId,
+      ),
       {
         is_active: isActive,
       },
@@ -62,6 +82,7 @@ export async function updateUserStatus(
 
   return response.data;
 }
+
 
 export interface AdminPasswordResetPayload {
   new_password: string;
@@ -80,20 +101,29 @@ export async function resetUserPassword(
   payload: AdminPasswordResetPayload,
 ): Promise<AdminActionResponse> {
   const response =
-    await api.patch<AdminActionResponse>(
-      `/admin/users/${userId}/password`,
+    await apiClient.patch<
+      AdminActionResponse
+    >(
+      endpoints.admin.userPassword(
+        userId,
+      ),
       payload,
     );
 
   return response.data;
 }
 
+
 export async function deleteUser(
   userId: number,
 ): Promise<AdminActionResponse> {
   const response =
-    await api.delete<AdminActionResponse>(
-      `/admin/users/${userId}`,
+    await apiClient.delete<
+      AdminActionResponse
+    >(
+      endpoints.admin.userDelete(
+        userId,
+      ),
     );
 
   return response.data;

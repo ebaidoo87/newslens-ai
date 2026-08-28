@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 import type {
   Article,
@@ -15,8 +21,10 @@ export interface ReadingHistoryItem {
 export async function recordArticleView(
   articleId: number,
 ): Promise<void> {
-  await api.post(
-    `/history/${articleId}`,
+  await apiClient.post(
+    endpoints.history.record(
+      articleId,
+    ),
   );
 }
 
@@ -24,16 +32,17 @@ export async function recordArticleView(
 export async function getReadingHistory(
   limit = 50,
 ): Promise<ReadingHistoryItem[]> {
-  const response = await api.get<
-    ReadingHistoryItem[]
-  >(
-    "/history",
-    {
-      params: {
-        limit,
+  const response =
+    await apiClient.get<
+      ReadingHistoryItem[]
+    >(
+      endpoints.history.list,
+      {
+        params: {
+          limit,
+        },
       },
-    },
-  );
+    );
 
   return response.data;
 }
@@ -41,5 +50,7 @@ export async function getReadingHistory(
 
 export async function clearReadingHistory():
 Promise<void> {
-  await api.delete("/history");
+  await apiClient.delete(
+    endpoints.history.clear,
+  );
 }

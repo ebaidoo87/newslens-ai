@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 
 export interface AdminEmailStats {
@@ -72,8 +78,10 @@ export interface AdminRecentEmail {
 export async function getAdminDashboard():
 Promise<AdminDashboardSummary> {
   const response =
-    await api.get<AdminDashboardSummary>(
-      "/admin/dashboard",
+    await apiClient.get<
+      AdminDashboardSummary
+    >(
+      endpoints.admin.dashboard,
     );
 
   return response.data;
@@ -83,8 +91,10 @@ Promise<AdminDashboardSummary> {
 export async function getAdminUserStats():
 Promise<AdminUserStats> {
   const response =
-    await api.get<AdminUserStats>(
-      "/admin/users/stats",
+    await apiClient.get<
+      AdminUserStats
+    >(
+      endpoints.admin.userStats,
     );
 
   return response.data;
@@ -94,8 +104,10 @@ Promise<AdminUserStats> {
 export async function getAdminSystemHealth():
 Promise<AdminSystemHealth> {
   const response =
-    await api.get<AdminSystemHealth>(
-      "/admin/system/health",
+    await apiClient.get<
+      AdminSystemHealth
+    >(
+      endpoints.admin.systemHealth,
     );
 
   return response.data;
@@ -105,8 +117,10 @@ Promise<AdminSystemHealth> {
 export async function getAdminEmailStats():
 Promise<AdminEmailStats> {
   const response =
-    await api.get<AdminEmailStats>(
-      "/admin/email/stats",
+    await apiClient.get<
+      AdminEmailStats
+    >(
+      endpoints.admin.emailStats,
     );
 
   return response.data;
@@ -117,8 +131,10 @@ export async function getAdminRecentEmails(
   limit = 10,
 ): Promise<AdminRecentEmail[]> {
   const response =
-    await api.get<AdminRecentEmail[]>(
-      "/admin/email/recent",
+    await apiClient.get<
+      AdminRecentEmail[]
+    >(
+      endpoints.admin.emailRecent,
       {
         params: {
           limit,

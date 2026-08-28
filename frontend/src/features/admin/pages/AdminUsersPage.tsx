@@ -19,11 +19,11 @@ import {
 
 import {
   useAuth,
-} from "../../../shared/context/AuthContext";
+} from "../../../shared/hooks/useAuth";
 
 import {
   useToast,
-} from "../../../shared/context/ToastContext";
+} from "../../../shared/hooks/useToast";
 
 import {
   useUpdateUserRole,

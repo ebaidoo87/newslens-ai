@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 
 export interface EmailStats {
@@ -30,6 +36,7 @@ export interface RecentEmail {
   status: string;
 
   provider: string;
+
   provider_status:
     string | null;
 
@@ -51,8 +58,8 @@ export interface RecentEmail {
 export async function getEmailStats():
 Promise<EmailStats> {
   const response =
-    await api.get<EmailStats>(
-      "/admin/email/stats",
+    await apiClient.get<EmailStats>(
+      endpoints.admin.emailStats,
     );
 
   return response.data;
@@ -63,8 +70,8 @@ export async function getRecentEmails(
   limit = 25,
 ): Promise<RecentEmail[]> {
   const response =
-    await api.get<RecentEmail[]>(
-      "/admin/email/recent",
+    await apiClient.get<RecentEmail[]>(
+      endpoints.admin.emailRecent,
       {
         params: {
           limit,

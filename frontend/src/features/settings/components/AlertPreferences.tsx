@@ -11,11 +11,11 @@ import {
 
 import {
   usePreferences,
-} from "../../../shared/context/PreferenceContext";
+} from "../../../shared/hooks/usePreferences";
 
 import {
   useToast,
-} from "../../../shared/context/ToastContext";
+} from "../../../shared/hooks/useToast";
 
 import type {
   UserPreferenceItem,

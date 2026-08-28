@@ -3,13 +3,25 @@ import type {
   InternalAxiosRequestConfig,
 } from "axios";
 
-import { api } from "../services/api";
+import { apiClient } from "./client";
+
 
 export const TOKEN_STORAGE_KEY =
   "newslens_access_token";
 
-export function setupApiInterceptors() {
-  api.interceptors.request.use(
+
+let interceptorsConfigured = false;
+
+export const AUTH_SESSION_EXPIRED_EVENT =
+  "newslens:session-expired";
+
+
+export function setupApiInterceptors(): void {
+  if (interceptorsConfigured) {
+    return;
+  }
+
+  apiClient.interceptors.request.use(
     (
       config: InternalAxiosRequestConfig,
     ) => {
@@ -24,27 +36,47 @@ export function setupApiInterceptors() {
 
       return config;
     },
+
     (error: AxiosError) =>
       Promise.reject(error),
   );
 
-  api.interceptors.response.use(
-    (response) => response,
 
-    (error: AxiosError) => {
-      if (error.response?.status === 401) {
-        localStorage.removeItem(
-          TOKEN_STORAGE_KEY,
+  apiClient.interceptors.response.use(
+  (response) => response,
+
+  (error: AxiosError) => {
+    const status =
+      error.response?.status;
+
+    if (status === 401) {
+      localStorage.removeItem(
+        TOKEN_STORAGE_KEY,
+      );
+      window.dispatchEvent(
+        new Event(
+          AUTH_SESSION_EXPIRED_EVENT,
+        ),
+      );
+
+      const path =
+        window.location.pathname;
+
+      const isPublicAuthPage =
+        path === "/login"
+        || path === "/register";
+
+      if (!isPublicAuthPage) {
+        window.location.assign(
+          "/login",
         );
-
-        if (
-          window.location.pathname !== "/login"
-        ) {
-          window.location.assign("/login");
-        }
       }
+    }
 
-      return Promise.reject(error);
-    },
-  );
+    return Promise.reject(error);
+  },
+);
+
+
+  interceptorsConfigured = true;
 }

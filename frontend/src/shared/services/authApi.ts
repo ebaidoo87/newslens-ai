@@ -1,9 +1,17 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
+
 
 export interface LoginCredentials {
   email: string;
   password: string;
 }
+
 
 export interface RegisterCredentials {
   email: string;
@@ -11,10 +19,12 @@ export interface RegisterCredentials {
   password: string;
 }
 
+
 export interface AuthToken {
   access_token: string;
   token_type: string;
 }
+
 
 export interface AuthUser {
   id: number;
@@ -22,6 +32,7 @@ export interface AuthUser {
   username: string;
   role: "user" | "admin";
 }
+
 
 export interface UpdateProfilePayload {
   username?: string;
@@ -36,57 +47,70 @@ export interface ChangePasswordPayload {
   confirm_new_password: string;
 }
 
+
 export async function loginUser(
   credentials: LoginCredentials,
 ): Promise<AuthToken> {
-  const response = await api.post<AuthToken>(
-    "/auth/login",
-    credentials,
-  );
+  const response =
+    await apiClient.post<AuthToken>(
+      endpoints.auth.login,
+      credentials,
+    );
 
   return response.data;
 }
+
 
 export async function registerUser(
   credentials: RegisterCredentials,
 ): Promise<AuthUser> {
-  const response = await api.post<AuthUser>(
-    "/auth/register",
-    credentials,
-  );
+  const response =
+    await apiClient.post<AuthUser>(
+      endpoints.auth.register,
+      credentials,
+    );
 
   return response.data;
 }
+
 
 export async function getCurrentUser():
 Promise<AuthUser> {
   const response =
-    await api.get<AuthUser>("/auth/me");
+    await apiClient.get<AuthUser>(
+      endpoints.auth.me,
+    );
 
   return response.data;
 }
+
 
 export async function updateCurrentUser(
   payload: UpdateProfilePayload,
 ): Promise<AuthUser> {
-  const response = await api.patch<AuthUser>(
-    "/auth/me",
-    payload,
-  );
+  const response =
+    await apiClient.patch<AuthUser>(
+      endpoints.auth.me,
+      payload,
+    );
 
   return response.data;
 }
 
+
 export async function changePassword(
   payload: ChangePasswordPayload,
 ): Promise<void> {
-  await api.patch(
-    "/auth/password",
+  await apiClient.patch(
+    endpoints.auth.password,
     payload,
   );
 }
 
+
 export async function logoutAllDevices():
 Promise<void> {
-  await api.post("/auth/logout-all");
+  await apiClient.post(
+    endpoints.auth.logoutAll,
+  );
 }

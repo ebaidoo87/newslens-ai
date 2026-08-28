@@ -39,10 +39,9 @@ import BookmarkButton from "../../bookmarks/components/BookmarkButton";
 
 
 import {
-
   useAuth,
+} from "../../../shared/hooks/useAuth";
 
-} from "../../../shared/context/AuthContext";
 
 
 
@@ -92,7 +91,7 @@ import type {
 
 import {
   useReadingHistory,
-} from "../../../shared/context/ReadingHistoryContext";
+} from "../../../shared/hooks/useReadingHistory";
 
 
 
@@ -273,6 +272,7 @@ export default function ArticleDetailPage() {
 }, [
   article?.id,
   isAuthenticated,
+  refreshHistory,
 ]);
 
 

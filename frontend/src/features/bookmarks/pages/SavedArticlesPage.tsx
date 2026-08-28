@@ -8,7 +8,7 @@ import SavedArticleSkeleton from "../components/SavedArticleSkeleton";
 
 import {
   useBookmarks,
-} from "../../../shared/context/BookmarkContext";
+} from "../../../shared/hooks/useBookmarks";
 
 export default function SavedArticlesPage() {
   const {

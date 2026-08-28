@@ -9,9 +9,15 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import axios from "axios";
+import {
+  normalizeApiError,
+} from "../../../shared/api/errors";
 
-import { useAuth } from "../../../shared/context/AuthContext";
+
+import {
+  useAuth,
+} from "../../../shared/hooks/useAuth";
+
 
 import {
   registerUser,
@@ -88,20 +94,16 @@ export default function RegisterPage() {
         },
       });
     } catch (requestError) {
-      if (axios.isAxiosError(requestError)) {
-        const detail =
-          requestError.response?.data?.detail;
+        const apiError =
+            normalizeApiError(
+            requestError,
+            );
 
         setError(
-          typeof detail === "string"
-            ? detail
-            : "Registration failed. Please try again.",
+            apiError.message
+            || "Registration failed. Please try again.",
         );
-      } else {
-        setError(
-          "Registration failed. Please try again.",
-        );
-      }
+        
     } finally {
       setIsSubmitting(false);
     }

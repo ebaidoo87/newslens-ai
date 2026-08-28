@@ -1,7 +1,5 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -10,8 +8,7 @@ import {
 
 import {
   useAuth,
-} from "./AuthContext";
-
+} from "../hooks/useAuth";
 
 import {
   deleteAllNotifications as deleteAllNotificationsRequest,
@@ -23,40 +20,9 @@ import {
   type Notification,
 } from "../services/notificationApi";
 
-interface NotificationContextType {
-  notifications: Notification[];
-  unreadCount: number;
-  isLoading: boolean;
-
-  refreshNotifications:
-    () => Promise<void>;
-
-  markAsRead:
-    (
-      notificationId: number,
-    ) => Promise<void>;
-
-  markAllAsRead:
-    () => Promise<void>;
-
-  deleteNotification: (
-    notificationId: number,
-    ) => Promise<void>;
-
-  deleteReadNotifications:
-    () => Promise<number>;
-
-  deleteAllNotifications:
-    () => Promise<number>;
-
-}
-
-
-const NotificationContext =
-  createContext<
-    NotificationContextType
-    | undefined
-  >(undefined);
+import {
+  NotificationContext,
+} from "./NotificationContext";
 
 
 export function NotificationProvider({
@@ -91,26 +57,29 @@ export function NotificationProvider({
 
 
   const refreshNotifications =
-    useCallback(async (): Promise<void> => {
-      if (!isAuthenticated) {
-        setNotifications([]);
-        return;
-      }
+    useCallback(
+      async (): Promise<void> => {
+        if (!isAuthenticated) {
+          setNotifications([]);
+          return;
+        }
 
-      setIsLoading(true);
+        setIsLoading(true);
 
-      try {
-        const data =
-          await getNotifications();
+        try {
+          const data =
+            await getNotifications();
 
-        setNotifications(data);
-      } catch {
-        // Do not remove existing alerts
-        // because of a temporary API failure.
-      } finally {
-        setIsLoading(false);
-      }
-    }, [isAuthenticated]);
+          setNotifications(data);
+        } catch {
+          // Preserve existing alerts during
+          // temporary API failures.
+        } finally {
+          setIsLoading(false);
+        }
+      },
+      [isAuthenticated],
+    );
 
 
   async function markAsRead(
@@ -123,7 +92,10 @@ export function NotificationProvider({
           === notificationId,
       );
 
-    if (!existing || existing.is_read) {
+    if (
+      !existing
+      || existing.is_read
+    ) {
       return;
     }
 
@@ -164,55 +136,6 @@ export function NotificationProvider({
     }
   }
 
-  async function deleteReadNotifications():
-   Promise<number> {
-    const previousNotifications =
-      notifications;
-
-    setNotifications(
-      (currentNotifications) =>
-        currentNotifications.filter(
-          (notification) =>
-            !notification.is_read,
-        ),
-    );
-
-    try {
-        const response =
-          await deleteReadNotificationsRequest();
-
-        return response.deleted_count;
-    } catch (error) {
-        setNotifications(
-      previousNotifications,
-    );
-
-    throw error;
-    }
-  }
-
-
-  async function deleteAllNotifications():
-  Promise<number> {
-    const previousNotifications =
-      notifications;
-
-    setNotifications([]);
-
-    try {
-      const response =
-        await deleteAllNotificationsRequest();
-
-      return response.deleted_count;
-    } catch (error) {
-      setNotifications(
-        previousNotifications,
-      );
-
-      throw error;
-    }
-  }
-
 
   async function markAllAsRead():
   Promise<void> {
@@ -240,32 +163,84 @@ export function NotificationProvider({
     }
   }
 
+
   async function deleteNotification(
-  notificationId: number,
-    ): Promise<void> {
+    notificationId: number,
+  ): Promise<void> {
     const previousNotifications =
-        notifications;
+      notifications;
 
     setNotifications(
-        (currentNotifications) =>
-            currentNotifications.filter(
-                (notification) =>
-                    notification.id !== notificationId,
+      (currentNotifications) =>
+        currentNotifications.filter(
+          (notification) =>
+            notification.id
+            !== notificationId,
         ),
     );
 
     try {
-        await deleteNotificationRequest(
-            notificationId,
-    );
-  } catch (error) {
+      await deleteNotificationRequest(
+        notificationId,
+      );
+    } catch (error) {
+      setNotifications(
+        previousNotifications,
+      );
+
+      throw error;
+    }
+  }
+
+
+  async function deleteReadNotifications():
+  Promise<number> {
+    const previousNotifications =
+      notifications;
+
     setNotifications(
-      previousNotifications,
+      (currentNotifications) =>
+        currentNotifications.filter(
+          (notification) =>
+            !notification.is_read,
+        ),
     );
 
-    throw error;
+    try {
+      const response =
+        await deleteReadNotificationsRequest();
+
+      return response.deleted_count;
+    } catch (error) {
+      setNotifications(
+        previousNotifications,
+      );
+
+      throw error;
+    }
   }
-}
+
+
+  async function deleteAllNotifications():
+  Promise<number> {
+    const previousNotifications =
+      notifications;
+
+    setNotifications([]);
+
+    try {
+      const response =
+        await deleteAllNotificationsRequest();
+
+      return response.deleted_count;
+    } catch (error) {
+      setNotifications(
+        previousNotifications,
+      );
+
+      throw error;
+    }
+  }
 
 
   useEffect(() => {
@@ -278,7 +253,7 @@ export function NotificationProvider({
       return;
     }
 
-    refreshNotifications();
+    void refreshNotifications();
   }, [
     isAuthenticated,
     isAuthLoading,
@@ -294,7 +269,7 @@ export function NotificationProvider({
     const intervalId =
       window.setInterval(
         () => {
-          refreshNotifications();
+          void refreshNotifications();
         },
         60_000,
       );
@@ -327,21 +302,4 @@ export function NotificationProvider({
       {children}
     </NotificationContext.Provider>
   );
-}
-
-
-export function useNotifications():
-NotificationContextType {
-  const context =
-    useContext(
-      NotificationContext,
-    );
-
-  if (!context) {
-    throw new Error(
-      "useNotifications must be used within NotificationProvider",
-    );
-  }
-
-  return context;
 }

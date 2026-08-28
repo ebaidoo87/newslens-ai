@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 import type {
   Article,
@@ -15,16 +21,17 @@ export interface RecommendedArticle {
 export async function getRecommendations(
   limit = 20,
 ): Promise<RecommendedArticle[]> {
-  const response = await api.get<
-    RecommendedArticle[]
-  >(
-    "/recommendations",
-    {
-      params: {
-        limit,
+  const response =
+    await apiClient.get<
+      RecommendedArticle[]
+    >(
+      endpoints.recommendations,
+      {
+        params: {
+          limit,
+        },
       },
-    },
-  );
+    );
 
   return response.data;
 }

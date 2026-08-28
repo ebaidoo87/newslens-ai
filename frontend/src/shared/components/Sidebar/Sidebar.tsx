@@ -1,16 +1,13 @@
-import { sidebarItems } from "./sidebarData";
-import SidebarItem from "./SidebarItem";
-import {
-  Activity,
-} from "lucide-react";
 
 import {
   useAuth,
-} from "../../context/AuthContext";
+} from "../../hooks/useAuth";
 
-  label: "Email Delivery"
-  path: "/email-monitoring"
-  icon: Activity
+import SidebarItem from "./SidebarItem";
+import {
+  sidebarItems,
+} from "./sidebarData";
+
 
 export default function Sidebar() {
   const {
@@ -23,11 +20,25 @@ export default function Sidebar() {
         !item.adminOnly
         || isAdmin,
     );
-    
 
   return (
-    <aside className="h-full w-64 border-r border-gray-800 bg-gray-900">
-      <nav className="flex flex-col gap-2 p-4">
+    <aside
+      className="
+        h-full
+        w-64
+        border-r
+        border-gray-800
+        bg-gray-900
+      "
+    >
+      <nav
+        className="
+          flex
+          flex-col
+          gap-2
+          p-4
+        "
+      >
         {visibleItems.map(
           (item) => (
             <SidebarItem

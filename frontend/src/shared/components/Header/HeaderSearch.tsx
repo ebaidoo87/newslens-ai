@@ -1,6 +1,8 @@
 import { Search } from "lucide-react";
 
-import { useSearch } from "../../context/SearchContext";
+import {
+  useSearch,
+} from "../../hooks/useSearch";
 
 export default function HeaderSearch() {
   const { search, setSearch } = useSearch();

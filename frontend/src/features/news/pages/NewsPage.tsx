@@ -1,14 +1,15 @@
 import { useDebounce } from "use-debounce";
 
 import { useArticles } from "../hooks/useArticles";
-import { useSearch } from "../../../shared/context/SearchContext";
+import { useSearch } from "../../../shared/hooks/useSearch";
+
 
 import ArticleList from "../components/ArticleList";
 import ArticleSkeletonList from "../components/ArticleSkeletonList";
 
 import EmptyState from "../../../shared/components/EmptyState/EmptyState";
 
-import { useCategory } from "../../../shared/context/CategoryContext";
+import { useCategory } from "../../../shared/hooks/useCategory";
 import CategoryFilter from "../components/CategoryFilter";
 
 

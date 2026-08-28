@@ -11,15 +11,17 @@ import {
 
 import {
   useAuth,
-} from "../../../shared/context/AuthContext";
+} from "../../../shared/hooks/useAuth";
 
 import {
   useBookmarks,
-} from "../../../shared/context/BookmarkContext";
+} from "../../../shared/hooks/useBookmarks";
+
+
 
 import {
   useToast,
-} from "../../../shared/context/ToastContext";
+} from "../../../shared/hooks/useToast";
 
 import type {
   Article,

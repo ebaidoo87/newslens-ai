@@ -5,17 +5,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./app/App";
 import "./styles/globals.css";
 
-import { SearchProvider } from "./shared/context/SearchContext";
+import {
+  SearchProvider,
+} from "./shared/context/SearchProvider";
 
-import { CategoryProvider } from "./shared/context/CategoryContext";
+import { CategoryProvider } from "./shared/context/CategoryProvider";
 
-import { AuthProvider } from "./shared/context/AuthContext";
+import {
+  AuthProvider,
+} from "./shared/context/AuthProvider";
 
 import { setupApiInterceptors } from "./shared/api/interceptors";
 
 import {
   BookmarkProvider,
-} from "./shared/context/BookmarkContext";
+} from "./shared/context/BookmarkProvider";
 
 
 import {
@@ -24,19 +28,19 @@ import {
 
 import {
   ToastProvider,
-} from "./shared/context/ToastContext";
+} from "./shared/context/ToastProvider";
 
 import {
   ReadingHistoryProvider,
-} from "./shared/context/ReadingHistoryContext";
+} from "./shared/context/ReadingHistoryProvider";
 
 import {
   PreferenceProvider,
-} from "./shared/context/PreferenceContext";
+} from "./shared/context/PreferenceProvider";
 
 import {
   NotificationProvider,
-} from "./shared/context/NotificationContext";
+} from "./shared/context/NotificationProvider";
 
 
 const queryClient = new QueryClient();

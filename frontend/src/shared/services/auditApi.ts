@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 
 export interface AuditLog {
@@ -56,10 +62,11 @@ export interface AuditStats {
 export async function getAuditLogs(
   filters: AuditFilters,
 ): Promise<AuditLogResponse> {
-
   const response =
-    await api.get<AuditLogResponse>(
-      "/admin/audit",
+    await apiClient.get<
+      AuditLogResponse
+    >(
+      endpoints.admin.audit,
       {
         params: filters,
       },
@@ -71,21 +78,25 @@ export async function getAuditLogs(
 
 export async function getAuditStats():
 Promise<AuditStats> {
-
   const response =
-    await api.get<AuditStats>(
-      "/admin/audit/stats",
+    await apiClient.get<
+      AuditStats
+    >(
+      endpoints.admin.auditStats,
     );
 
   return response.data;
 }
 
+
 export async function getRecentAuditLogs(
   limit = 8,
 ): Promise<AuditLog[]> {
   const response =
-    await api.get<AuditLog[]>(
-      "/admin/audit/recent",
+    await apiClient.get<
+      AuditLog[]
+    >(
+      endpoints.admin.auditRecent,
       {
         params: {
           limit,

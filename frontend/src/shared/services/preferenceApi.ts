@@ -1,16 +1,14 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
 
-
-export type PreferenceType =
-  | "category"
-  | "country"
-  | "keyword"
-  | "alert"
-  | "email_alert";
+import {
+  endpoints,
+} from "../api/endpoints";
 
 
 export interface UserPreferenceItem {
-  preference_type: PreferenceType;
+  preference_type: string;
   preference_value: string;
 }
 
@@ -23,8 +21,10 @@ export interface UserPreferencesResponse {
 export async function getPreferences():
 Promise<UserPreferencesResponse> {
   const response =
-    await api.get<UserPreferencesResponse>(
-      "/preferences",
+    await apiClient.get<
+      UserPreferencesResponse
+    >(
+      endpoints.preferences.root,
     );
 
   return response.data;
@@ -35,8 +35,10 @@ export async function updatePreferences(
   preferences: UserPreferenceItem[],
 ): Promise<UserPreferencesResponse> {
   const response =
-    await api.put<UserPreferencesResponse>(
-      "/preferences",
+    await apiClient.put<
+      UserPreferencesResponse
+    >(
+      endpoints.preferences.root,
       {
         preferences,
       },
@@ -48,5 +50,7 @@ export async function updatePreferences(
 
 export async function clearPreferences():
 Promise<void> {
-  await api.delete("/preferences");
+  await apiClient.delete(
+    endpoints.preferences.root,
+  );
 }

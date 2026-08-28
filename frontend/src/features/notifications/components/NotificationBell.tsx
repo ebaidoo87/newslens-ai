@@ -17,11 +17,11 @@ import {
 
 import {
   useNotifications,
-} from "../../../shared/context/NotificationContext";
+} from "../../../shared/hooks/useNotifications";
 
 import {
   useToast,
-} from "../../../shared/context/ToastContext";
+} from "../../../shared/hooks/useToast";
 
 import {
   getRelativeTime,

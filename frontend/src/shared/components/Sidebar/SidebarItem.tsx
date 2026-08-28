@@ -1,15 +1,18 @@
 import { NavLink } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 
-import { useBookmarks } from "../../context/BookmarkContext";
+import { 
+  useBookmarks,
+} from "../../hooks/useBookmarks";
+
 
 import {
   useReadingHistory,
-} from "../../context/ReadingHistoryContext";
+} from "../../hooks/useReadingHistory";
 
 import {
   useNotifications,
-} from "../../context/NotificationContext";
+} from "../../hooks/useNotifications";
 
 
 type SidebarItemProps = {

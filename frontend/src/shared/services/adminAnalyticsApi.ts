@@ -1,4 +1,10 @@
-import { api } from "./api";
+import {
+  apiClient,
+} from "../api/client";
+
+import {
+  endpoints,
+} from "../api/endpoints";
 
 
 export interface AdminAnalyticsSummary {
@@ -32,8 +38,10 @@ export interface AdminAnalyticsSummary {
 export async function getAdminAnalyticsSummary():
 Promise<AdminAnalyticsSummary> {
   const response =
-    await api.get<AdminAnalyticsSummary>(
-      "/admin/analytics/summary",
+    await apiClient.get<
+      AdminAnalyticsSummary
+    >(
+      endpoints.admin.analyticsSummary,
     );
 
   return response.data;

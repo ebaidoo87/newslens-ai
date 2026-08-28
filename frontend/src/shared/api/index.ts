@@ -1,4 +1,18 @@
-export * from "./client";
-export * from "./endpoints";
+export {
+  apiClient,
+} from "./client";
 
-import "./interceptors";
+export {
+  endpoints,
+} from "./endpoints";
+
+export {
+  normalizeApiError,
+  type ApiError,
+} from "./errors";
+
+export {
+  AUTH_SESSION_EXPIRED_EVENT,
+  TOKEN_STORAGE_KEY,
+  setupApiInterceptors,
+} from "./interceptors";
