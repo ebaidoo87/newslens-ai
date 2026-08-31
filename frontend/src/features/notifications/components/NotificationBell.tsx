@@ -39,6 +39,11 @@ export default function NotificationBell() {
       null,
     );
 
+  const triggerRef =
+    useRef<HTMLButtonElement | null>(
+      null,
+    );
+
   const navigate = useNavigate();
 
   const {
@@ -68,9 +73,27 @@ export default function NotificationBell() {
       }
     }
 
+    function handleKeyDown(
+      event: KeyboardEvent,
+    ) {
+      if (
+        event.key === "Escape"
+        && isOpen
+      ) {
+        setIsOpen(false);
+
+        triggerRef.current?.focus();
+      }
+    }
+
     document.addEventListener(
       "mousedown",
       handleOutsideClick,
+    );
+
+    document.addEventListener(
+      "keydown",
+      handleKeyDown,
     );
 
     return () => {
@@ -78,8 +101,13 @@ export default function NotificationBell() {
         "mousedown",
         handleOutsideClick,
       );
+
+      document.removeEventListener(
+        "keydown",
+        handleKeyDown,
+      );
     };
-  }, []);
+  }, [isOpen]);
 
 
   async function handleNotificationClick(
@@ -132,20 +160,61 @@ export default function NotificationBell() {
       className="relative"
     >
       <button
+        ref={triggerRef}
         type="button"
         onClick={() =>
           setIsOpen(
             (current) => !current,
           )
         }
-        aria-label="Notifications"
+        aria-label={
+          unreadCount > 0
+            ? `Notifications, ${unreadCount} unread`
+            : "Notifications"
+        }
         aria-expanded={isOpen}
-        className="relative rounded-lg p-2 text-gray-300 transition hover:bg-gray-800 hover:text-white"
+        aria-controls="notification-dropdown"
+        aria-haspopup="true"
+        className="
+          relative
+          rounded-lg
+          p-2
+          text-gray-300
+          transition
+          hover:bg-gray-800
+          hover:text-white
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-blue-500
+          focus-visible:ring-offset-2
+          focus-visible:ring-offset-gray-900
+        "
       >
-        <Bell size={21} />
+        <Bell
+          size={21}
+          aria-hidden="true"
+        />
 
         {unreadCount > 0 && (
-          <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold text-white">
+          <span
+            className="
+              absolute
+              -right-1
+              -top-1
+              flex
+              min-h-5
+              min-w-5
+              items-center
+              justify-center
+              rounded-full
+              bg-red-600
+              px-1
+              text-xs
+              font-bold
+              text-white
+            "
+            aria-hidden="true"
+          >
             {unreadCount > 99
               ? "99+"
               : unreadCount}
@@ -155,14 +224,34 @@ export default function NotificationBell() {
 
 
       {isOpen && (
-        <div className="absolute right-0 top-full z-50 mt-3 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 shadow-2xl">
+        <div
+          id="notification-dropdown"
+          aria-label="Notifications"
+          className="
+            absolute
+            right-0
+            top-full
+            z-50
+            mt-3
+            w-[min(24rem,calc(100vw-2rem))]
+            overflow-hidden
+            rounded-2xl
+            border
+            border-gray-800
+            bg-gray-900
+            shadow-2xl
+          "
+        >
           <div className="flex items-center justify-between border-b border-gray-800 px-4 py-4">
             <div>
               <h2 className="font-semibold">
                 Notifications
               </h2>
 
-              <p className="mt-1 text-xs text-gray-500">
+              <p
+                className="mt-1 text-xs text-gray-500"
+                aria-live="polite"
+              >
                 {unreadCount === 1
                   ? "1 unread notification"
                   : `${unreadCount} unread notifications`}
@@ -175,10 +264,24 @@ export default function NotificationBell() {
                 onClick={
                   handleMarkAllRead
                 }
-                className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 transition hover:text-blue-300"
+                className="
+                  inline-flex
+                  items-center
+                  gap-1
+                  rounded
+                  text-xs
+                  font-medium
+                  text-blue-400
+                  transition
+                  hover:text-blue-300
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-blue-500
+                "
               >
                 <CheckCheck
                   size={15}
+                  aria-hidden="true"
                 />
 
                 Mark all read
@@ -191,10 +294,15 @@ export default function NotificationBell() {
             {isLoading
               && notifications.length
                 === 0 ? (
-              <div className="flex items-center justify-center gap-3 px-4 py-10 text-sm text-gray-400">
+              <div
+                className="flex items-center justify-center gap-3 px-4 py-10 text-sm text-gray-400"
+                role="status"
+                aria-live="polite"
+              >
                 <LoaderCircle
                   size={18}
                   className="animate-spin"
+                  aria-hidden="true"
                 />
 
                 Loading notifications...
@@ -205,6 +313,7 @@ export default function NotificationBell() {
                 <Bell
                   size={36}
                   className="mx-auto text-gray-600"
+                  aria-hidden="true"
                 />
 
                 <p className="mt-4 font-medium">
@@ -241,6 +350,10 @@ export default function NotificationBell() {
                       transition
                       last:border-b-0
                       hover:bg-gray-800
+                      focus-visible:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-inset
+                      focus-visible:ring-blue-500
                       ${
                         notification.is_read
                           ? "bg-gray-900"
@@ -250,6 +363,7 @@ export default function NotificationBell() {
                   >
                     <div className="flex gap-3">
                       <span
+                        aria-hidden="true"
                         className={`
                           mt-2
                           h-2
@@ -297,7 +411,22 @@ export default function NotificationBell() {
               onClick={() =>
                 setIsOpen(false)
               }
-              className="block rounded-lg px-4 py-2 text-center text-sm font-semibold text-blue-400 transition hover:bg-gray-800 hover:text-blue-300"
+              className="
+                block
+                rounded-lg
+                px-4
+                py-2
+                text-center
+                text-sm
+                font-semibold
+                text-blue-400
+                transition
+                hover:bg-gray-800
+                hover:text-blue-300
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-blue-500
+              "
             >
               View all notifications
             </Link>

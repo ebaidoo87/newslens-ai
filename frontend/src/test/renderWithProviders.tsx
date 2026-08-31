@@ -12,8 +12,11 @@ import {
 } from "react-router-dom";
 
 import {
-  QueryClient,
   QueryClientProvider,
+} from "@tanstack/react-query";
+
+import {
+  QueryClient,
 } from "@tanstack/react-query";
 
 
@@ -22,13 +25,15 @@ interface RenderWithProvidersOptions {
 }
 
 
-function createTestQueryClient() {
+export function createTestQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
+        gcTime: 0,
+        staleTime: 0,
+        refetchOnWindowFocus: false,
       },
-
       mutations: {
         retry: false,
       },

@@ -39,8 +39,13 @@ export default function NotificationItem({
   onDelete,
   isUpdating,
 }: NotificationItemProps) {
+  const titleId =
+    `notification-${notification.id}-title`;
+
   return (
     <article
+      aria-labelledby={titleId}
+      aria-busy={isUpdating}
       className={`
         rounded-2xl
         border
@@ -55,6 +60,7 @@ export default function NotificationItem({
     >
       <div className="flex gap-4">
         <div
+          aria-hidden="true"
           className={`
             flex
             h-11
@@ -77,12 +83,24 @@ export default function NotificationItem({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="font-semibold text-white">
+                <h2
+                  id={titleId}
+                  className="font-semibold text-white"
+                >
                   {notification.title}
                 </h2>
 
                 {!notification.is_read && (
-                  <span className="h-2 w-2 rounded-full bg-blue-500" />
+                  <>
+                    <span
+                      aria-hidden="true"
+                      className="h-2 w-2 rounded-full bg-blue-500"
+                    />
+
+                    <span className="sr-only">
+                      Unread
+                    </span>
+                  </>
                 )}
               </div>
 
@@ -104,19 +122,38 @@ export default function NotificationItem({
                 `/articles/${notification.article.id}`
               }
               onClick={() => {
-                if (
-                  !notification.is_read
-                ) {
+                if (!notification.is_read) {
                   void onMarkRead(
                     notification.id,
                   );
                 }
               }}
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500"
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-lg
+                bg-blue-600
+                px-4
+                py-2
+                text-sm
+                font-semibold
+                text-white
+                transition
+                hover:bg-blue-500
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-blue-400
+                focus-visible:ring-offset-2
+                focus-visible:ring-offset-gray-900
+              "
             >
               View article
 
-              <ExternalLink size={16} />
+              <ExternalLink
+                size={16}
+                aria-hidden="true"
+              />
             </Link>
 
             {!notification.is_read && (
@@ -128,9 +165,32 @@ export default function NotificationItem({
                   )
                 }
                 disabled={isUpdating}
-                className="inline-flex items-center gap-2 rounded-lg border border-gray-700 px-4 py-2 text-sm font-medium text-gray-300 transition hover:border-green-700 hover:text-green-300 disabled:cursor-not-allowed disabled:opacity-60"
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-lg
+                  border
+                  border-gray-700
+                  px-4
+                  py-2
+                  text-sm
+                  font-medium
+                  text-gray-300
+                  transition
+                  hover:border-green-700
+                  hover:text-green-300
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-green-500
+                  disabled:cursor-not-allowed
+                  disabled:opacity-60
+                "
               >
-                <Check size={16} />
+                <Check
+                  size={16}
+                  aria-hidden="true"
+                />
 
                 Mark read
               </button>
@@ -144,9 +204,34 @@ export default function NotificationItem({
                 )
               }
               disabled={isUpdating}
-              className="inline-flex items-center gap-2 rounded-lg border border-red-900 px-4 py-2 text-sm font-medium text-red-300 transition hover:bg-red-950 disabled:cursor-not-allowed disabled:opacity-60"
+              aria-label={
+                `Delete notification: ${notification.title}`
+              }
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-lg
+                border
+                border-red-900
+                px-4
+                py-2
+                text-sm
+                font-medium
+                text-red-300
+                transition
+                hover:bg-red-950
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-red-500
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+              "
             >
-              <Trash2 size={16} />
+              <Trash2
+                size={16}
+                aria-hidden="true"
+              />
 
               Delete
             </button>

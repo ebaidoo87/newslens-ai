@@ -19,7 +19,14 @@ import {
   ReadingHistoryContext,
 } from "./ReadingHistoryContext";
 
+import {
+  useQueryClient,
+} from "@tanstack/react-query";
 
+import {
+  queryKeys,
+} from "../lib/queryKeys";
+  
 export function ReadingHistoryProvider({
   children,
 }: {
@@ -29,6 +36,27 @@ export function ReadingHistoryProvider({
     isAuthenticated,
     isLoading: isAuthLoading,
   } = useAuth();
+
+  const queryClient =
+  useQueryClient();
+
+  const invalidatePersonalizedFeeds =
+  useCallback(
+    async (): Promise<void> => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey:
+            queryKeys.recommendations.all,
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey:
+            queryKeys.discovery.all,
+        }),
+      ]);
+    },
+    [queryClient],
+  );
 
   const [
     history,
@@ -79,6 +107,8 @@ export function ReadingHistoryProvider({
 
     try {
       await clearReadingHistory();
+
+      await invalidatePersonalizedFeeds();
     } catch (error) {
       setHistory(
         previousHistory,

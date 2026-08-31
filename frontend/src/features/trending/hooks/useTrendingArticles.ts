@@ -3,6 +3,10 @@ import {
 } from "@tanstack/react-query";
 
 import {
+  queryKeys,
+} from "../../../shared/lib/queryKeys";
+
+import {
   getTrendingArticles,
 } from "../../../shared/services/trendingApi";
 
@@ -12,20 +16,16 @@ export function useTrendingArticles(
   limit = 20,
 ) {
   return useQuery({
-    queryKey: [
-      "trending",
-      country ?? "world",
-      limit,
-    ],
+    queryKey:
+      queryKeys.trending.list(
+        country,
+        limit,
+      ),
 
     queryFn: () =>
       getTrendingArticles({
         country,
         limit,
       }),
-
-    staleTime: 5 * 60 * 1000,
-
-    retry: 1,
   });
 }

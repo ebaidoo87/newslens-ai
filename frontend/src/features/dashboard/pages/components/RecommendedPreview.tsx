@@ -11,6 +11,7 @@ import {
   useRecommendations,
 } from "../../../recommendations/hooks/useRecommendations";
 
+import ArticleImage from "../../../../shared/components/ArticleImage/ArticleImage";
 
 export default function RecommendedPreview() {
   const {
@@ -89,15 +90,17 @@ export default function RecommendedPreview() {
               className="group block rounded-xl border border-gray-800 bg-gray-950/40 p-4 transition hover:border-purple-700"
             >
               <div className="flex gap-4">
-                {recommendation.article.image_url && (
-                  <img
-                    src={
-                      recommendation.article.image_url
-                    }
-                    alt=""
-                    className="h-20 w-24 shrink-0 rounded-lg object-cover"
-                  />
-                )}
+                <div className="w-24 shrink-0 overflow-hidden rounded-lg">
+                    <ArticleImage
+                        src={
+                        recommendation.article.image_url
+                        }
+                        alt={
+                        recommendation.article.title
+                        }
+                        className="h-20 w-24"
+                    />
+                    </div>
 
                 <div className="min-w-0">
                   <p className="line-clamp-2 font-semibold transition group-hover:text-purple-300">

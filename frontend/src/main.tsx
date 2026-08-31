@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 
 import App from "./app/App";
 import "./styles/globals.css";
@@ -21,6 +21,9 @@ import {
   BookmarkProvider,
 } from "./shared/context/BookmarkProvider";
 
+import {
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 import {
   BrowserRouter
@@ -43,7 +46,9 @@ import {
 } from "./shared/context/NotificationProvider";
 
 
-const queryClient = new QueryClient();
+import {
+  queryClient,
+} from "./shared/lib/queryClient";
 
 setupApiInterceptors();
 

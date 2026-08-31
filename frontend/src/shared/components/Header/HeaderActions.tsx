@@ -1,4 +1,9 @@
 import {
+  lazy,
+  Suspense,
+} from "react";
+
+import {
   LogIn,
   LogOut,
   User,
@@ -13,7 +18,15 @@ import {
   useAuth,
 } from "../../hooks/useAuth";
 
-import NotificationBell from "../../../features/notifications/components/NotificationBell";
+
+const NotificationBell =
+  lazy(
+    () =>
+      import(
+        "../../../features/notifications/components/NotificationBell"
+      ),
+  );
+
 
 export default function HeaderActions() {
   const navigate = useNavigate();
@@ -23,7 +36,7 @@ export default function HeaderActions() {
     isAuthenticated,
     logout,
   } = useAuth();
-  
+
 
   function handleLogout() {
     logout();
@@ -32,6 +45,7 @@ export default function HeaderActions() {
       replace: true,
     });
   }
+
 
   if (!isAuthenticated || !user) {
     return (
@@ -50,18 +64,34 @@ export default function HeaderActions() {
           text-white
           transition
           hover:bg-blue-500
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-blue-400
+          focus-visible:ring-offset-2
+          focus-visible:ring-offset-gray-900
         "
       >
-        <LogIn size={17} />
+        <LogIn
+          size={17}
+          aria-hidden="true"
+        />
 
         Sign in
       </Link>
     );
   }
 
+
   return (
     <div className="flex items-center gap-4">
-      <div className="hidden items-center gap-3 sm:flex">
+      <div
+        className="
+          hidden
+          items-center
+          gap-3
+          sm:flex
+        "
+      >
         <div
           className="
             flex
@@ -73,6 +103,7 @@ export default function HeaderActions() {
             bg-blue-600
             text-white
           "
+          aria-hidden="true"
         >
           <User size={18} />
         </div>
@@ -87,15 +118,24 @@ export default function HeaderActions() {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <NotificationBell />
 
-        {/* Existing profile, login or logout controls */}
+      <div className="flex items-center gap-3">
+        <Suspense
+          fallback={
+            <div
+              className="h-9 w-9"
+              aria-hidden="true"
+            />
+          }
+        >
+          <NotificationBell />
+        </Suspense>
       </div>
 
       <button
         type="button"
         onClick={handleLogout}
+        aria-label="Log out"
         className="
           flex
           items-center
@@ -111,9 +151,17 @@ export default function HeaderActions() {
           hover:border-red-700
           hover:bg-red-950
           hover:text-red-300
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-red-500
+          focus-visible:ring-offset-2
+          focus-visible:ring-offset-gray-900
         "
       >
-        <LogOut size={17} />
+        <LogOut
+          size={17}
+          aria-hidden="true"
+        />
 
         <span className="hidden sm:inline">
           Logout

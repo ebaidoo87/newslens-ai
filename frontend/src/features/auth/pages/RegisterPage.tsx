@@ -123,9 +123,12 @@ export default function RegisterPage() {
         </div>
 
         {error && (
-          <div className="mb-6 rounded-lg border border-red-800 bg-red-950 p-4 text-red-200">
+        <div
+            role="alert"
+            className="mb-6 rounded-lg border border-red-800 bg-red-950 p-4 text-red-200"
+        >
             {error}
-          </div>
+        </div>
         )}
 
         <form

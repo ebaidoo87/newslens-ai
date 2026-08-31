@@ -13,6 +13,39 @@ export default defineConfig({
     tailwindcss(),
   ],
 
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/react/")) {
+            return "react";
+          }
+
+          if (
+            id.includes("node_modules/react-dom/")
+            || id.includes("node_modules/react-router-dom/")
+          ) {
+            return "react";
+          }
+
+          if (id.includes("node_modules/@tanstack/react-query/")) {
+            return "query";
+          }
+
+          if (id.includes("node_modules/axios/")) {
+            return "axios";
+          }
+
+          if (id.includes("node_modules/lucide-react/")) {
+            return "icons";
+          }
+
+          return undefined;
+        },
+      },
+    },
+  },
+
   test: {
     environment: "jsdom",
 

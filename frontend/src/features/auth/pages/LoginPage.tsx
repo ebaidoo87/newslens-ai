@@ -222,7 +222,11 @@ export default function LoginPage() {
 
         {locationState?.registrationSuccess && (
 
-          <div className="mb-6 rounded-lg border border-green-800 bg-green-950 p-4 text-green-200">
+          <div
+            role="status"
+            aria-live="polite"
+            className="mb-6 rounded-lg border border-green-800 bg-green-950 p-4 text-green-200"
+          >
 
             Your account was created successfully. You can now sign in.
 
@@ -233,7 +237,11 @@ export default function LoginPage() {
 
 
         {locationState?.passwordChanged && (
-          <div className="mb-6 rounded-lg border border-green-800 bg-green-950 p-4 text-green-200">
+          <div
+            role="status"
+            aria-live="polite"
+            className="mb-6 rounded-lg border border-green-800 bg-green-950 p-4 text-green-200"
+          >
             Your password was changed successfully.
             Sign in using your new password.
           </div>
@@ -244,13 +252,12 @@ export default function LoginPage() {
 
 
         {error && (
-
-          <div className="mb-6 rounded-lg border border-red-800 bg-red-950 p-4 text-red-200">
-
+          <div
+            role="alert"
+            className="mb-6 rounded-lg border border-red-800 bg-red-950 p-4 text-red-200"
+          >
             {error}
-
           </div>
-
         )}
 
 
@@ -347,7 +354,21 @@ export default function LoginPage() {
 
               placeholder="Enter your password"
 
-              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white outline-none transition focus:border-blue-500"
+              className="
+                          w-full
+                          rounded-lg
+                          border
+                          border-gray-700
+                          bg-gray-800
+                          px-4
+                          py-3
+                          text-white
+                          outline-none
+                          transition
+                          focus:border-blue-500
+                          focus-visible:ring-2
+                          focus-visible:ring-blue-500
+                        "
 
             />
 
@@ -363,9 +384,25 @@ export default function LoginPage() {
 
             disabled={isSubmitting}
 
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
-
-          >
+            className="
+                        w-full
+                        rounded-lg
+                        bg-blue-600
+                        px-4
+                        py-3
+                        font-semibold
+                        text-white
+                        transition
+                        hover:bg-blue-500
+                        focus-visible:outline-none
+                        focus-visible:ring-2
+                        focus-visible:ring-blue-400
+                        focus-visible:ring-offset-2
+                        focus-visible:ring-offset-gray-900
+                        disabled:cursor-not-allowed
+                        disabled:opacity-60
+                      "
+                      >
 
             {isSubmitting
 

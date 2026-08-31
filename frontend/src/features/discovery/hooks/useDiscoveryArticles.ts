@@ -3,6 +3,10 @@ import {
 } from "@tanstack/react-query";
 
 import {
+  queryKeys,
+} from "../../../shared/lib/queryKeys";
+
+import {
   getDiscoveryArticles,
 } from "../../../shared/services/discoveryApi";
 
@@ -11,16 +15,14 @@ export function useDiscoveryArticles(
   limit = 20,
 ) {
   return useQuery({
-    queryKey: [
-      "discovery",
-      limit,
-    ],
+    queryKey:
+      queryKeys.discovery.list(
+        limit,
+      ),
 
     queryFn: () =>
-      getDiscoveryArticles(limit),
-
-    staleTime: 5 * 60 * 1000,
-
-    retry: 1,
+      getDiscoveryArticles(
+        limit,
+      ),
   });
 }

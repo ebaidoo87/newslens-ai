@@ -224,39 +224,85 @@ export default function KeywordPreferences() {
       <form
         onSubmit={addKeyword}
         className="mt-6 flex flex-col gap-3 sm:flex-row"
-      >
-        <input
-          type="text"
-          value={keyword}
-          onChange={(event) =>
-            setKeyword(
-              event.target.value,
-            )
-          }
-          maxLength={MAX_KEYWORD_LENGTH}
-          placeholder="Example: Artificial Intelligence"
-          className="min-w-0 flex-1 rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white outline-none transition focus:border-blue-500"
-        />
+        >
+        <div className="min-w-0 flex-1">
+            <label
+            htmlFor="preference-keyword"
+            className="sr-only"
+            >
+            Add favourite topic
+            </label>
+
+            <input
+            id="preference-keyword"
+            type="text"
+            value={keyword}
+            onChange={(event) =>
+                setKeyword(
+                event.target.value,
+                )
+            }
+            maxLength={MAX_KEYWORD_LENGTH}
+            placeholder="Example: Artificial Intelligence"
+            aria-describedby="keyword-preference-help"
+            className="
+                w-full
+                rounded-lg
+                border
+                border-gray-700
+                bg-gray-800
+                px-4
+                py-3
+                text-white
+                outline-none
+                transition
+                focus:border-blue-500
+                focus-visible:ring-2
+                focus-visible:ring-blue-500
+            "
+            />
+        </div>
 
         <button
-          type="submit"
-          disabled={
+            type="submit"
+            disabled={
             !keyword.trim()
-            || keywords.length
-              >= MAX_KEYWORDS
-          }
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-blue-500 px-5 py-3 font-semibold text-blue-300 transition hover:bg-blue-950 disabled:cursor-not-allowed disabled:opacity-50"
+            || keywords.length >= MAX_KEYWORDS
+            }
+            className="
+            inline-flex
+            items-center
+            justify-center
+            gap-2
+            rounded-lg
+            border
+            border-blue-500
+            px-5
+            py-3
+            font-semibold
+            text-blue-300
+            transition
+            hover:bg-blue-950
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-blue-500
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+            "
         >
-          <Plus size={18} />
+            <Plus
+            size={18}
+            aria-hidden="true"
+            />
 
-          Add topic
+            Add topic
         </button>
-      </form>
+        </form>
 
 
       <div className="mt-3 flex items-center justify-between gap-3 text-sm text-gray-500">
-        <span>
-          Add up to {MAX_KEYWORDS} topics.
+       <span id="keyword-preference-help">
+            Add up to {MAX_KEYWORDS} topics.
         </span>
 
         <span>
@@ -289,9 +335,10 @@ export default function KeywordPreferences() {
                   aria-label={
                     `Remove ${keywordValue}`
                   }
-                  className="rounded-full p-0.5 transition hover:bg-blue-800 hover:text-white"
+                  className="rounded-full p-0.5 transition hover:bg-blue-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 >
                   <X size={15} />
+                  
                 </button>
               </div>
             ),
@@ -309,12 +356,13 @@ export default function KeywordPreferences() {
           type="button"
           onClick={handleSave}
           disabled={isSaving}
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         >
           {isSaving && (
             <LoaderCircle
               size={18}
               className="animate-spin"
+              aria-hidden="true"
             />
           )}
 

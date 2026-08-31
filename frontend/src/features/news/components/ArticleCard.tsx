@@ -1,10 +1,14 @@
-import { Link } from "react-router-dom";
+import {
+  Link,
+} from "react-router-dom";
 
 import {
   getCountryMetadata,
 } from "../../../shared/utils/countries";
 
-import type { Article } from "../types/article";
+import type {
+  Article,
+} from "../types/article";
 
 import BookmarkButton from "../../bookmarks/components/BookmarkButton";
 
@@ -24,58 +28,76 @@ interface ArticleCardProps {
 export default function ArticleCard({
   article,
 }: ArticleCardProps) {
-  const country = getCountryMetadata(
-    article.country,
-  );
+  const country =
+    getCountryMetadata(
+      article.country,
+    );
+
 
   const relativeTime =
-  getRelativeTime(
-    article.published_at,
-  );
+    getRelativeTime(
+      article.published_at,
+    );
 
-const readingTime =
-  getReadingTime(
-    article.content,
-    article.summary,
-  );
+
+  const readingTime =
+    getReadingTime(
+      article.content,
+      article.summary,
+    );
+
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900 transition duration-200 hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-xl">
-
-      {article.image_url && (
-        <ArticleImage
-            src={article.image_url}
-            alt={article.title}
-            articleId={article.id}
-        />
-      )}
+      <ArticleImage
+        src={
+          article.image_url
+        }
+        alt={
+          article.title
+        }
+        articleId={
+          article.id
+        }
+      />
 
       <div className="flex flex-1 flex-col p-6">
         <div className="mb-4 flex flex-wrap gap-2">
           <span className="rounded-full bg-blue-950 px-3 py-1 text-xs font-medium capitalize text-blue-300">
-            {article.category}
+            {
+              article.category
+            }
           </span>
 
           <span className="rounded-full bg-gray-800 px-3 py-1 text-xs text-gray-300">
-            {country.flag} {country.name}
+            {country.flag}{" "}
+            {country.name}
           </span>
-          
+
           <span className="rounded-full bg-blue-950 px-3 py-1 text-xs font-medium capitalize text-blue-300">
-            {readingTime}
+            {
+              readingTime
+            }
           </span>
         </div>
 
         <Link
-          to={`/articles/${article.id}`}
+          to={
+            `/articles/${article.id}`
+          }
           className="group"
         >
           <h2 className="text-xl font-semibold transition group-hover:text-blue-300">
-            {article.title}
+            {
+              article.title
+            }
           </h2>
 
           {article.summary && (
             <p className="mt-3 line-clamp-3 leading-relaxed text-gray-400">
-              {article.summary}
+              {
+                article.summary
+              }
             </p>
           )}
         </Link>
@@ -83,51 +105,59 @@ const readingTime =
         <div className="mt-auto pt-5">
           <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
             <span>
-              {article.source}
+              {
+                article.source
+              }
             </span>
 
             {article.published_at && (
               <span>
-                {new Date(
-                  article.published_at,
-                ).toLocaleDateString()}
+                {
+                  new Date(
+                    article.published_at,
+                  ).toLocaleDateString()
+                }
               </span>
             )}
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-4">
             <Link
-                to={`/articles/${article.id}`}
-                className="font-medium text-blue-400 hover:text-blue-300"
+              to={
+                `/articles/${article.id}`
+              }
+              className="font-medium text-blue-400 hover:text-blue-300"
             >
-                View details...
+              View details...
             </Link>
 
             <a
-                href={article.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-white-400 hover:text-white-300"
+              href={
+                article.url
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-white-400 hover:text-white-300"
             >
-                Visit source ↗
+              Visit source ↗
             </a>
 
             <BookmarkButton
-                article={article}
+              article={
+                article
+              }
             />
-
-         </div>
-         
+          </div>
         </div>
+
         <div className="mt-4 pt-1">
           <span className="rounded-full bg-blue-950 px-3 py-1 text-xs font-medium capitalize text-blue-300">
-            {relativeTime}
+            {
+              relativeTime
+            }
           </span>
-          </div>
+        </div>
       </div>
-      
-    
-
     </article>
   );
 }

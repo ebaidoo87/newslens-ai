@@ -1,10 +1,14 @@
-import { NavLink } from "react-router-dom";
-import type { LucideIcon } from "lucide-react";
+import type {
+  LucideIcon,
+} from "lucide-react";
 
-import { 
+import {
+  NavLink,
+} from "react-router-dom";
+
+import {
   useBookmarks,
 } from "../../hooks/useBookmarks";
-
 
 import {
   useReadingHistory,
@@ -21,60 +25,99 @@ type SidebarItemProps = {
   icon: LucideIcon;
 };
 
+
 export default function SidebarItem({
   title,
   path,
   icon: Icon,
 }: SidebarItemProps) {
-  const { bookmarkCount } = useBookmarks();
-
+  const {
+    bookmarkCount,
+  } = useBookmarks();
 
   const {
-        historyCount,
-      } = useReadingHistory();
-  
+    historyCount,
+  } = useReadingHistory();
+
   const {
-        unreadCount,
-      } = useNotifications();
+    unreadCount,
+  } = useNotifications();
+
 
   const count =
-  title === "Saved Articles"
-    ? bookmarkCount
-    : title === "Recently Viewed"
-      ? historyCount
-      : title === "Notifications"
-        ? unreadCount
-      : null;
-      
+    title === "Saved Articles"
+      ? bookmarkCount
+      : title === "Recently Viewed"
+        ? historyCount
+        : title === "Notifications"
+          ? unreadCount
+          : null;
+
 
   return (
     <NavLink
       to={path}
-  className={({ isActive }) =>
-    `flex items-center justify-between rounded-lg px-4 py-3 transition-colors ${
-      isActive
-        ? "bg-blue-600 text-white"
-        : "text-gray-300 hover:bg-gray-800 hover:text-white"
-    }`
-  }
->
-  <div className="flex items-center gap-3">
-    <Icon size={20} />
-    <span>{title}</span>
-  </div>
+      className={({
+        isActive,
+      }) =>
+        `
+          flex
+          items-center
+          justify-between
+          rounded-lg
+          px-4
+          py-3
+          transition-colors
+          focus-visible:outline-none
+          focus-visible:ring-2
+          focus-visible:ring-blue-500
+          focus-visible:ring-offset-2
+          focus-visible:ring-offset-gray-900
+          ${
+            isActive
+              ? "bg-blue-600 text-white"
+              : "text-gray-300 hover:bg-gray-800 hover:text-white"
+          }
+        `
+      }
+    >
+      <div className="flex items-center gap-3">
+        <Icon
+          size={20}
+          aria-hidden="true"
+        />
 
-  {count !== null
-&& (
-  title !== "Notifications"
-  || count > 0
-) && (
-  <span className="rounded-full bg-gray-800 px-2 py-0.5 text-xs font-semibold">
-    {count > 99
-      ? "99+"
-      : count}
-  </span>
-)}
+        <span>
+          {title}
+        </span>
+      </div>
+
+      {count !== null
+        && (
+          title !== "Notifications"
+          || count > 0
+        )
+        && (
+          <span
+            className="
+              rounded-full
+              bg-gray-800
+              px-2
+              py-0.5
+              text-xs
+              font-semibold
+            "
+            aria-label={
+              title === "Notifications"
+                ? `${count} unread notifications`
+                : `${count} items`
+            }
+          >
+            {count > 99
+              ? "99+"
+              : count}
+          </span>
+        )}
     </NavLink>
-    
   );
 }

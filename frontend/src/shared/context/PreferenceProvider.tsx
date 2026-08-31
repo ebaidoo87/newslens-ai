@@ -21,6 +21,13 @@ import {
   PreferenceContext,
 } from "./PreferenceContext";
 
+import {
+  useQueryClient,
+} from "@tanstack/react-query";
+
+import {
+  queryKeys,
+} from "../lib/queryKeys";
 
 export function PreferenceProvider({
   children,
@@ -31,6 +38,27 @@ export function PreferenceProvider({
     isAuthenticated,
     isLoading: isAuthLoading,
   } = useAuth();
+
+  const queryClient =
+  useQueryClient();
+
+  const invalidatePersonalizedFeeds =
+    useCallback(
+      async (): Promise<void> => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey:
+              queryKeys.recommendations.all,
+          }),
+
+          queryClient.invalidateQueries({
+            queryKey:
+              queryKeys.discovery.all,
+          }),
+        ]);
+      },
+      [queryClient],
+    );
 
   const [
     preferences,
@@ -170,6 +198,8 @@ export function PreferenceProvider({
       setPreferences(
         response.preferences,
       );
+
+      await invalidatePersonalizedFeeds();
     } catch (error) {
       setPreferences(
         previousPreferences,
@@ -189,6 +219,8 @@ export function PreferenceProvider({
 
     try {
       await clearPreferencesRequest();
+
+      await invalidatePersonalizedFeeds();
     } catch (error) {
       setPreferences(
         previousPreferences,

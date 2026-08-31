@@ -17,8 +17,6 @@ import {
   useBookmarks,
 } from "../../../shared/hooks/useBookmarks";
 
-
-
 import {
   useToast,
 } from "../../../shared/hooks/useToast";
@@ -27,9 +25,11 @@ import type {
   Article,
 } from "../../news/types/article";
 
+
 interface BookmarkButtonProps {
   article: Article;
 }
+
 
 export default function BookmarkButton({
   article,
@@ -55,6 +55,7 @@ export default function BookmarkButton({
 
   const bookmarked =
     isBookmarked(article.id);
+
 
   async function handleToggle(
     event: MouseEvent<HTMLButtonElement>,
@@ -101,12 +102,14 @@ export default function BookmarkButton({
     }
   }
 
+
   return (
     <button
       type="button"
       onClick={handleToggle}
       disabled={isSubmitting}
       aria-pressed={bookmarked}
+      aria-busy={isSubmitting}
       aria-label={
         bookmarked
           ? "Remove saved article"
@@ -125,6 +128,11 @@ export default function BookmarkButton({
         text-sm
         font-medium
         transition
+        focus-visible:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-yellow-500
+        focus-visible:ring-offset-2
+        focus-visible:ring-offset-gray-950
         disabled:cursor-not-allowed
         disabled:opacity-60
         ${
@@ -138,11 +146,18 @@ export default function BookmarkButton({
         <LoaderCircle
           size={17}
           className="animate-spin"
+          aria-hidden="true"
         />
       ) : bookmarked ? (
-        <BookmarkCheck size={17} />
+        <BookmarkCheck
+          size={17}
+          aria-hidden="true"
+        />
       ) : (
-        <Bookmark size={17} />
+        <Bookmark
+          size={17}
+          aria-hidden="true"
+        />
       )}
 
       {isSubmitting

@@ -26,6 +26,13 @@ import {
   BookmarkContext,
 } from "./BookmarkContext";
 
+import {
+  useQueryClient,
+} from "@tanstack/react-query";
+
+import {
+  queryKeys,
+} from "../lib/queryKeys";
 
 export function BookmarkProvider({
   children,
@@ -36,6 +43,32 @@ export function BookmarkProvider({
     isAuthenticated,
     isLoading: isAuthLoading,
   } = useAuth();
+
+  const queryClient =
+  useQueryClient();
+
+  const invalidateArticleFeeds =
+  useCallback(
+    async (): Promise<void> => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey:
+            queryKeys.recommendations.all,
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey:
+            queryKeys.discovery.all,
+        }),
+
+        queryClient.invalidateQueries({
+          queryKey:
+            queryKeys.trending.all,
+        }),
+      ]);
+    },
+    [queryClient],
+  );
 
   const [
     bookmarks,
@@ -137,7 +170,10 @@ export function BookmarkProvider({
       article.id,
     );
 
-    await refreshBookmarks();
+    await Promise.all([
+      refreshBookmarks(),
+      invalidateArticleFeeds(),
+    ]);
   } catch (error) {
     setBookmarks(
       (currentBookmarks) =>
@@ -172,6 +208,8 @@ export function BookmarkProvider({
       await removeBookmarkRequest(
         articleId,
       );
+
+      await invalidateArticleFeeds();
     } catch (error) {
       setBookmarks(
         previousBookmarks,

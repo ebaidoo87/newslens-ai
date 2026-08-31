@@ -1,9 +1,9 @@
-
 import {
   useAuth,
 } from "../../hooks/useAuth";
 
 import SidebarItem from "./SidebarItem";
+
 import {
   sidebarItems,
 } from "./sidebarData";
@@ -30,25 +30,29 @@ export default function Sidebar() {
         border-gray-800
         bg-gray-900
       "
+      aria-label="Primary navigation"
     >
-      <nav
-        className="
-          flex
-          flex-col
-          gap-2
-          p-4
-        "
-      >
-        {visibleItems.map(
-          (item) => (
-            <SidebarItem
-              key={item.path}
-              title={item.label}
-              path={item.path}
-              icon={item.icon}
-            />
-          ),
-        )}
+      <nav aria-label="Main">
+        <ul
+          className="
+            flex
+            flex-col
+            gap-2
+            p-4
+          "
+        >
+          {visibleItems.map(
+            (item) => (
+              <li key={item.path}>
+                <SidebarItem
+                  title={item.label}
+                  path={item.path}
+                  icon={item.icon}
+                />
+              </li>
+            ),
+          )}
+        </ul>
       </nav>
     </aside>
   );
