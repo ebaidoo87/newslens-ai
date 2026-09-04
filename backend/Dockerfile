@@ -5,14 +5,18 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-RUN apt-get update && \
-    apt-get install -y gcc libpq-dev && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y \
+        gcc \
+        libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 
-RUN pip install --upgrade pip && \
-    pip install --prefix=/install -r requirements.txt
+RUN pip install --upgrade pip \
+    && pip install \
+        --prefix=/install \
+        -r requirements.txt
 
 
 FROM python:3.13-slim
@@ -22,11 +26,17 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY --from=builder /install /usr/local
+COPY --from=builder \
+    /install \
+    /usr/local
 
 COPY . .
 
-RUN useradd --create-home appuser
+RUN useradd \
+    --create-home \
+    appuser
+
+RUN chmod +x /app/start.sh
 
 USER appuser
 
@@ -37,5 +47,12 @@ HEALTHCHECK \
     --timeout=10s \
     --start-period=30s \
     --retries=3 \
-    CMD python -c "import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/api/health/live')"
+    CMD python -c \
+    "import os, urllib.request; \
+    urllib.request.urlopen( \
+    'http://127.0.0.1:' \
+    + os.getenv('PORT', '8000') \
+    + '/api/health/live', \
+    timeout=5)"
+
 CMD ["./start.sh"]

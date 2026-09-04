@@ -9,6 +9,6 @@ alembic upgrade head
 echo "Starting NewsLens..."
 
 exec uvicorn \
-app.main:app \
---host 0.0.0.0 \
---port 8000
+    app.main:app \
+    --host 0.0.0.0 \
+    --port "${PORT:-8000}"

@@ -24,32 +24,65 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str
 
-
-    DATABASE_URL: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     ENVIRONMENT: str = "development"
-    DEBUG: bool = True
 
     TESTING: bool = False
 
     RESEND_API_KEY: str | None = None
     RESEND_WEBHOOK_SECRET: str | None = None
 
-    EMAIL_FROM: str = "NewsLens AI <noreply@example.com>"
+    EMAIL_FROM: str = (
+        "NewsLens AI <noreply@example.com>"
+    )
 
-    CORS_ORIGINS: list[str] = ["http://localhost:5173"]
-
-    TRUSTED_HOSTS: list[str] = [
-    "localhost",
-    "127.0.0.1",
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",
     ]
 
+    TRUSTED_HOSTS: list[str] = [
+        "localhost",
+        "127.0.0.1",
+    ]
 
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=False,
     )
+
+    @model_validator(mode="after")
+    def validate_production(self):
+        if (
+            self.ENVIRONMENT.lower()
+            == "production"
+            and self.debug
+        ):
+            raise ValueError(
+                "DEBUG cannot be enabled "
+                "in production."
+            )
+
+        return self
+
+    @field_validator(
+        "CORS_ORIGINS",
+        "TRUSTED_HOSTS",
+        mode="before",
+    )
+    @classmethod
+    def parse_string_lists(
+        cls,
+        value,
+    ):
+        if isinstance(value, str):
+            return [
+                item.strip()
+                for item in value.split(",")
+                if item.strip()
+            ]
+
+        return value
 
 
 @lru_cache
@@ -58,52 +91,3 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
-
-@model_validator(mode="after")
-def validate_production(self):
-
-    if self.ENVIRONMENT == "production":
-
-        if self.DEBUG:
-            raise ValueError(
-                "DEBUG cannot be enabled in production."
-            )
-
-    return self
-
-@field_validator(
-    "CORS_ORIGINS",
-    mode="before",
-)
-@classmethod
-def parse_cors_origins(
-    cls,
-    value,
-):
-    if isinstance(value, str):
-        return [
-            item.strip()
-            for item in value.split(",")
-            if item.strip()
-        ]
-
-    return value
-
-
-@field_validator(
-    "TRUSTED_HOSTS",
-    mode="before",
-)
-@classmethod
-def parse_trusted_hosts(
-    cls,
-    value,
-):
-    if isinstance(value, str):
-        return [
-            item.strip()
-            for item in value.split(",")
-            if item.strip()
-        ]
-
-    return value

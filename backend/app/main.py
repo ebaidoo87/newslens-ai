@@ -70,7 +70,6 @@ from app.core.logging import (
     logger,
 )
 from app.core.rate_limit import limiter
-from app.db import SessionLocal
 from app.db.init_db import init_db
 from app.db.session import (
     SessionLocal,
@@ -140,7 +139,7 @@ async def lifespan(
 configure_logging(
     level=(
         "DEBUG"
-        if settings.DEBUG
+        if settings.debug
         else "INFO"
     )
 )
