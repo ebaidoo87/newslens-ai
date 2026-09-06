@@ -47,14 +47,23 @@ export default function ProtectedRoute({
 
 
   if (!isAuthenticated) {
+    const intendedPath =
+      `${location.pathname}${location.search}`;
+
+    const loginPath =
+      `/login?redirect=${encodeURIComponent(
+        intendedPath,
+      )}`;
+
     return (
       <Navigate
-        to="/login"
+        to={loginPath}
         replace
         state={{
           from: {
             pathname:
               location.pathname,
+
             search:
               location.search,
           },

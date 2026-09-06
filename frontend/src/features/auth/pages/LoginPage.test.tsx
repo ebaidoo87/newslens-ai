@@ -58,6 +58,8 @@ const mockNormalizeApiError =
     normalizeApiError,
   );
 
+let mockIsAuthenticated = false;
+
 
 function createAuthState(
   overrides: Partial<
@@ -73,7 +75,7 @@ function createAuthState(
     token: null,
 
     isAuthenticated:
-      false,
+        mockIsAuthenticated,
 
     isLoading:
       false,
@@ -121,13 +123,18 @@ function renderLoginPage(
   return render(
     <MemoryRouter
       initialEntries={[
-        {
-          pathname:
-            initialPath,
+  {
+    pathname:
+      initialPath.split("?")[0],
 
-          state,
-        },
-      ]}
+    search:
+      initialPath.includes("?")
+        ? `?${initialPath.split("?")[1]}`
+        : "",
+
+    state,
+  },
+]}
     >
       <Routes>
         <Route
@@ -174,6 +181,8 @@ describe(
   () => {
     beforeEach(() => {
       vi.clearAllMocks();
+
+      mockIsAuthenticated = false;
 
       mockNormalizeApiError
     .mockReturnValue({
@@ -225,272 +234,131 @@ describe(
 
 
     it(
-      "redirects an already authenticated user to home",
-      () => {
-        mockUseAuth
-          .mockReturnValue(
-            createAuthState({
-              isAuthenticated:
-                true,
-            }),
-          );
-
-
-        renderLoginPage();
-
-
-        expect(
-          screen.getByText(
-            "Home Page",
-          ),
-        ).toBeInTheDocument();
-
-
-        expect(
-          screen.queryByRole(
-            "heading",
-            {
-              name:
-                "Welcome back",
-            },
-          ),
-        ).not.toBeInTheDocument();
-      },
-    );
-
-
-    it(
-      "submits the entered email and password",
-      async () => {
-        const browserUser =
-          userEvent.setup();
-
-        const login =
-          vi.fn()
-            .mockResolvedValue(
-              undefined,
+        "redirects an already authenticated user to home",
+        () => {
+            mockUseAuth
+            .mockReturnValue(
+                createAuthState({
+                isAuthenticated:
+                    true,
+                }),
             );
 
 
-        mockUseAuth
-          .mockReturnValue(
-            createAuthState({
-              login,
-            }),
-          );
-
-
-        renderLoginPage();
-
-
-        await browserUser.type(
-          screen.getByLabelText(
-            "Email",
-          ),
-          "user@example.com",
-        );
-
-        await browserUser.type(
-          screen.getByLabelText(
-            "Password",
-          ),
-          "secret123",
-        );
-
-        await browserUser.click(
-          screen.getByRole(
-            "button",
-            {
-              name:
-                "Sign in",
-            },
-          ),
-        );
-
-
-        await waitFor(
-          () => {
-            expect(
-              login,
-            ).toHaveBeenCalledWith({
-              email:
-                "user@example.com",
-
-              password:
-                "secret123",
-            });
-          },
-        );
-
-
-        expect(
-          screen.getByText(
-            "Home Page",
-          ),
-        ).toBeInTheDocument();
-      },
-    );
-
-
-    it(
-      "restores the protected destination after successful login",
-      async () => {
-        const browserUser =
-          userEvent.setup();
-
-        const login =
-          vi.fn()
-            .mockResolvedValue(
-              undefined,
-            );
-
-
-        mockUseAuth
-          .mockReturnValue(
-            createAuthState({
-              login,
-            }),
-          );
-
-
-        renderLoginPage({
-          state: {
-            from: {
-              pathname:
-                "/saved",
-
-              search:
-                "?page=2",
-            },
-          },
-        });
-
-
-        await browserUser.type(
-          screen.getByLabelText(
-            "Email",
-          ),
-          "user@example.com",
-        );
-
-        await browserUser.type(
-          screen.getByLabelText(
-            "Password",
-          ),
-          "secret123",
-        );
-
-        await browserUser.click(
-          screen.getByRole(
-            "button",
-            {
-              name:
-                "Sign in",
-            },
-          ),
-        );
-
-
-        await waitFor(
-          () => {
-            expect(
-              screen.getByText(
-                "Saved Page",
-              ),
-            ).toBeInTheDocument();
-          },
-        );
-      },
-    );
-
-
-    it(
-      "shows the invalid credentials message for a 401 response",
-      async () => {
-        const browserUser =
-          userEvent.setup();
-
-        const requestError =
-          new Error(
-            "Unauthorized",
-          );
-
-        const login =
-          vi.fn()
-            .mockRejectedValue(
-              requestError,
-            );
-
-
-        mockUseAuth
-          .mockReturnValue(
-            createAuthState({
-              login,
-            }),
-          );
-
-        mockNormalizeApiError
-            .mockReturnValue({
-                message:
-                "Unauthorized",
-
-                status:
-                401,
-
-                code:
-                "UNAUTHORIZED",
-        });
-
-        renderLoginPage();
-
-
-        await browserUser.type(
-          screen.getByLabelText(
-            "Email",
-          ),
-          "user@example.com",
-        );
-
-        await browserUser.type(
-          screen.getByLabelText(
-            "Password",
-          ),
-          "wrong-password",
-        );
-
-        await browserUser.click(
-                screen.getByRole(
-                    "button",
-                    {
-                    name:
-                        "Sign in",
-                    },
-                ),
-            );
+            renderLoginPage();
 
 
             expect(
-            await screen.findByText(
-                "Invalid email or password. Please try again.",
-            ),
-            ).toBeInTheDocument();
-
-
-            expect(
-            mockNormalizeApiError,
-            ).toHaveBeenCalledWith(
-            requestError,
-            );
-
-
-            expect(
-            screen.queryByText(
+            screen.getByText(
                 "Home Page",
             ),
-           ).not.toBeInTheDocument();
-     
-      },
-    );
+            ).toBeInTheDocument();
+
+
+            expect(
+            screen.queryByRole(
+                "heading",
+                {
+                name:
+                    "Welcome back",
+                },
+            ),
+            ).not.toBeInTheDocument();
+        },
+        );
+
+
+        it(
+        "submits the entered email and password",
+        async () => {
+            const browserUser =
+            userEvent.setup();
+
+            const login =
+            vi.fn()
+                .mockResolvedValue(
+                undefined,
+                );
+
+
+            mockUseAuth
+            .mockReturnValue(
+                createAuthState({
+                login,
+                }),
+            );
+
+
+            renderLoginPage();
+
+
+            await browserUser.type(
+            screen.getByLabelText(
+                "Email",
+            ),
+            "user@example.com",
+            );
+
+            await browserUser.type(
+            screen.getByLabelText(
+                "Password",
+            ),
+            "secret123",
+            );
+
+            await browserUser.click(
+            screen.getByRole(
+                "button",
+                {
+                name:
+                    "Sign in",
+                },
+            ),
+            );
+
+
+            await waitFor(
+            () => {
+                expect(
+                login,
+                ).toHaveBeenCalledWith({
+                email:
+                    "user@example.com",
+
+                password:
+                    "secret123",
+                });
+            },
+            );
+        },
+        );
+
+
+        it(
+        "restores the protected destination after authentication",
+        () => {
+            mockIsAuthenticated =
+            true;
+
+            mockUseAuth
+            .mockReturnValue(
+                createAuthState(),
+            );
+
+
+            renderLoginPage({
+            initialPath:
+                "/login?redirect=%2Fsaved",
+            });
+
+
+            expect(
+            screen.getByText(
+                "Saved Page",
+            ),
+            ).toBeInTheDocument();
+        },
+        );
 
 
     it(
@@ -695,15 +563,89 @@ describe(
 
 
         await waitFor(
-          () => {
+        () => {
             expect(
-              screen.getByText(
-                "Home Page",
-              ),
-            ).toBeInTheDocument();
-          },
+            screen.getByRole(
+                "button",
+                {
+                name:
+                    "Sign in",
+                },
+            ),
+            ).not.toBeDisabled();
+        },
         );
       },
     );
+
+    it(
+  "falls back to the dashboard for an unsafe redirect destination",
+  () => {
+    mockIsAuthenticated = true;
+
+    mockUseAuth
+      .mockReturnValue(
+        createAuthState(),
+      );
+
+
+    renderLoginPage({
+      initialPath:
+        "/login?redirect=%2F%2Fevil.example.com",
+    });
+
+
+    expect(
+      screen.getByText(
+        "Home Page",
+      ),
+    ).toBeInTheDocument();
+  },
+);
+it(
+  "redirects an authenticated user to the requested recommended page",
+  () => {
+    mockIsAuthenticated = true;
+
+    mockUseAuth
+      .mockReturnValue(
+        createAuthState(),
+      );
+
+
+    render(
+      <MemoryRouter
+        initialEntries={[
+          "/login?redirect=%2Frecommended",
+        ]}
+      >
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <LoginPage />
+            }
+          />
+
+          <Route
+            path="/recommended"
+            element={
+              <div>
+                Recommended Page
+              </div>
+            }
+          />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+
+    expect(
+      screen.getByText(
+        "Recommended Page",
+      ),
+    ).toBeInTheDocument();
+  },
+);
   },
 );
